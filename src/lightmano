@@ -1,0 +1,165 @@
+#!/bin/sh
+
+# -------------------------------------------------------
+# A shell script that sets the brightness level
+# Written by: Thomas Venries
+# Last updated on: 2016/7/11
+# -------------------------------------------------------
+
+#set -e
+
+usage() {
+	echo "Usage: brightness.sh <options> <values>"
+	echo "<value> has to be a positive decimal(raw mode)."
+	echo -e "<options> can be any of the following:\n"
+
+	echo "Operations:"
+	echo -e "-h:\tPrint this help and exits"
+
+	echo "Threshold:"
+	echo -e "-m:\tSet the minimum brightness"
+	echo -e "-M:\tSet the maximum brightness"
+
+	echo "Controller (can be use with thresholds):"
+	echo -e "-a:\tAdd value"
+	echo -e "-s:\tSubtract value"
+	echo -e "-c:\tSet value"
+}
+
+no_conjunction_with() {
+	while [ $# -ne 0 ]; do
+		[ "$1" = true ] && break || shift
+	done
+
+	if [ $# -eq 0 ]; then
+		return 1
+	fi
+
+	echo "Operation arguments can not be used in conjunction."
+	shift "$((OPTIND-1))"
+	return 0
+}
+
+is_positive_integer() {
+	[[ "$1" =~ ^[0-9]+ ]] && return 1 || return 0
+}
+
+check_option_arg() {
+	is_positive_integer "$2"
+}
+
+main() {
+	card="nv_backlight"
+	file="/sys/class/backlight/$card/brightness"
+	max_brightness=$(( $(cat /sys/class/backlight/$card/max_brightness) - 1))
+	brightness=$(cat $file)
+	own_min=0
+	own_max=$max_brightness
+
+	if [ $# -eq 0 ]; then
+		echo "$card: $own_min;$brightness;$own_max"
+		exit 0
+	fi
+
+	mFlag=false
+	MFlag=false
+	aFlag=false
+	sFlag=false
+	cFlag=false
+
+	OPTIND=1
+	while getopts "hm:M:a:s:c:" opt; do
+		case $opt in
+			h) [ $# -eq 1 ] && usage && exit 0 || invalid_conjunction_exit;;
+			m)
+				is_positive_integer "$OPTARG"
+				if [ "$?" == 0 ]; then usage; exit 2; fi
+				mFlag=true
+				mArg=$OPTARG
+				;;
+			M)
+				is_positive_integer "$OPTARG"
+				if [ "$?" == 0 ]; then usage; exit 2; fi
+				MFlag=true
+				MArg=$OPTARG
+				;;
+			a)
+				no_conjunction_with "$cFlag" "$sFlag"
+				if [ "$?" == 0 ]; then exit; fi
+				is_positive_integer "$OPTARG"
+				if [ "$?" == 0 ]; then usage; exit 2; fi
+				aFlag=true
+				valArg=$OPTARG
+				;;
+			s)
+				no_conjunction_with "$aFlag" "$sFlag"
+				if [ "$?" == 0 ]; then exit; fi
+				is_positive_integer "$OPTARG"
+				if [ "$?" == 0 ]; then usage; exit 2; fi
+				sFlag=true
+				valArg=$OPTARG
+				;;
+			c)
+				no_conjunction_with "$aFlag" "$sFlag"
+				if [ "$?" == 0 ]; then exit; fi
+				is_positive_integer "$OPTARG"
+				if [ "$?" == 0 ]; then usage; exit 2; fi
+				cFlag=true
+				valArg=$OPTARG
+				;;
+			\?) exit 2 ;;
+			:) exit 2 ;;
+		esac
+	done
+
+	shift "$((OPTIND-1))"
+
+	# The source has been changed.
+	if [ "$SFlag" = true ]; then
+		card="acpi_video0"
+		min_brightness=0
+		own_max=20
+		brightness=5
+		echo "Source: $card"
+	fi
+
+	# The minimum has been modified
+	[ "$mFlag" = true ] && own_min=$mArg && echo "min: $own_min"
+
+	# The maximum has been modified
+	[ "$MFlag" = true ] && own_max=$MArg && echo "max: $own_max"
+
+	# Increase the current value
+	if [ "$aFlag" = true ]; then
+		value=$(( brightness+valArg ))
+		if (( $value < $own_min )) ; then
+			value=$own_min
+		elif (( $value > $own_max )) ; then
+			value=$own_max
+		fi
+		echo "Increase: $value"
+		echo $value | sudo /usr/bin/tee $file
+	fi
+
+	# Decrease the current value
+	if [ "$sFlag" = true ]; then
+		value=$(( brightness-valArg ))
+		[[ $value < $own_min ]] && value=0
+		echo "Decrease: $value"
+		echo $value | sudo /usr/bin/tee $file
+	fi
+
+	# Set the current value
+	if [ "$cFlag" = true ]; then
+		value=$valArg
+		if (( $value > $own_max )) ; then
+			value=$own_max
+		elif (( $value < $own_min )) ; then
+			value=0
+		fi
+		echo "Set: $value"
+		echo $value | sudo /usr/bin/tee $file
+	fi
+}
+
+main "$@"
