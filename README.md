@@ -27,7 +27,7 @@ In the near future, with more time, I am going to turn to an udev rule or
 something else less intrusive.
 
 # Usage
-<code> brightness.sh [option] [value] </code>
+<code> lightmano [option] [value] </code>
 
 The value has to be a **positive decimal**.
 
