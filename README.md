@@ -9,12 +9,12 @@ and a bit more to offset the tiny lack of configuration.
 # Features
 
 *  Set a minimum brightness value, to make the screen plunges into total darkness.
-It happens sometimes from a certain value, if you decrease the brightness before
-0 the result is the same. So ergonomicly that value could be the minimum.
+It happens sometimes from a certain value, if you decrease the brightness until
+before 0 the result is the same. So ergonomicly that value could be the minimum.
 
 * Set a maximum brightness value, as some controllers, the max value is 100 but
 when 100 is achieved the screen is pitch black. So the friendly max is 99.
-Usually, when we keep the shortcut press to increase the brightness like nerotic,
+Usually, when we keep pressing the shortcut to increase the brightness like nerotic,
 we expect dazzling screen.
 
 # Installation
@@ -47,4 +47,5 @@ brightness value)
 * Automatically figure out the functional controller
 * Less intrusive method to edit the write-protected *brightness* file
 * Add an option to let the user choose the controller
-* Add a pertinent percent mode according to the new interval (with -m/-M options)
+* Add percent mode
+* Backup brightness value
