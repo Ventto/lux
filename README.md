@@ -30,24 +30,25 @@ Conscious, that was a lazy method.
 In the near future, with more time (udev rule or root the script)
 
 ## Usage
-<code> lightmano [option] [value] </code>
+<code> lightmano [OPTION]... </code>
 
-The value has to be a **positive decimal**.
+The option values are positive integers.
 
 ### To set the thresholds:
 * -m:	Set the minimum brightness
 * -M:	Set the maximum brightness (useless if greater than the real max
 brightness value)
+* -c:	Set the controller
 
-### To se the brightness (can be use with the threshold options):
-* -c:	Directly set the current brightness value
+### To set the brightness (can be use with the threshold options):
 * -a:	Add value
 * -s:	Subtract value
+* -S:	Set the current brightness value
 
+### No option (read values)
 
 ## TODO
 * Automatically figure out the functional controller
 * Less intrusive method to edit the write-protected *brightness* file
-* Add an option to let the user choose the controller
 * Add percent mode
 * Backup brightness value
