@@ -115,6 +115,11 @@ main() {
 		fi
 	done
 
+	if [ -z "$best_controller" ] ; then
+		echo "Controller not found."
+		exit 1
+	fi
+
 	own_min=0
 	own_max=$(( best_max-1 ))
 	file="$best_controller/brightness"
