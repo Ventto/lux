@@ -126,18 +126,15 @@ main() {
 
 	shift "$((OPTIND-1))"
 
-	# The brightness is not set
+	# No set option
 	if [ "$aFlag" = false ] && [ "$sFlag" = false ] && [ "$cFlag" = false ]
 	then
 		usage; exit 0
 	fi
 
-	# The minimum has been modified
 	[ "$mFlag" = true ] && own_min=$mArg
-	# The maximum has been modified
 	[ "$MFlag" = true ] && own_max=$MArg
 
-	# Increase the current value
 	if [ "$aFlag" = true ]; then
 		value=$(( brightness+valArg ))
 		if (( $brightness == 0 )) ; then
@@ -148,14 +145,12 @@ main() {
 		echo $value | sudo /usr/bin/tee $file
 	fi
 
-	# Decrease the current value
 	if [ "$sFlag" = true ]; then
 		value=$(( brightness-valArg ))
 		(( $value <= $own_min )) && value=0
 		echo $value | sudo /usr/bin/tee $file
 	fi
 
-	# Set the current value
 	if [ "$cFlag" = true ]; then
 		value=$valArg
 		if (( $value > $own_max )) ; then
