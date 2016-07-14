@@ -22,7 +22,7 @@ usage() {
 	echo "Controller (can not be use in conjunction):"
 	echo -e "-a:\tAdd value"
 	echo -e "-s:\tSubtract value"
-	echo -e "-c:\tSet value\n"
+	echo -e "-S:\tSet the brightness\n"
 
 	echo -e "No option (read values):  <controller_path>: min;current;max\n"
 }
@@ -49,7 +49,7 @@ main() {
 	MFlag=false
 	aFlag=false
 	sFlag=false
-	cFlag=false
+	SFlag=false
 
 	OPTIND=1
 	while getopts "hm:M:a:s:c:" opt; do
@@ -68,7 +68,7 @@ main() {
 				MArg=$OPTARG
 				;;
 			a)
-				no_conjunction_with "$cFlag" "$sFlag"
+				no_conjunction_with "$sFlag" "$SFlag"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
 				is_positive_integer "$OPTARG"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
@@ -76,19 +76,19 @@ main() {
 				valArg=$OPTARG
 				;;
 			s)
-				no_conjunction_with "$aFlag" "$sFlag"
+				no_conjunction_with "$aFlag" "$SFlag"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
 				is_positive_integer "$OPTARG"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
 				sFlag=true
 				valArg=$OPTARG
 				;;
-			c)
+			S)
 				no_conjunction_with "$aFlag" "$sFlag"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
 				is_positive_integer "$OPTARG"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
-				cFlag=true
+				SFlag=true
 				valArg=$OPTARG
 				;;
 			\?) exit 2 ;;
@@ -131,7 +131,7 @@ main() {
 	fi
 
 	# No set option
-	if [ "$aFlag" = false ] && [ "$sFlag" = false ] && [ "$cFlag" = false ]
+	if [ "$aFlag" = false ] && [ "$sFlag" = false ] && [ "$SFlag" = false ]
 	then
 		usage; exit 0
 	fi
@@ -155,7 +155,7 @@ main() {
 		echo $value | sudo /usr/bin/tee $file
 	fi
 
-	if [ "$cFlag" = true ]; then
+	if [ "$SFlag" = true ]; then
 		value=$valArg
 		if (( $value > $own_max )) ; then
 			value=$own_max
