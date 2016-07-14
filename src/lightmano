@@ -17,7 +17,8 @@ usage() {
 
 	echo "Threshold (can be used in conjuntion):"
 	echo -e "-m:\tSet the minimum brightness"
-	echo -e "-M:\tSet the maximum brightness\n"
+	echo -e "-M:\tSet the maximum brightness"
+	echo -e "-c:\tSet the controller\n"
 
 	echo "Controller (can not be use in conjunction):"
 	echo -e "-a:\tAdd value"
@@ -44,15 +45,29 @@ is_positive_integer() {
 	[[ "$1" =~ ^[0-9]+ ]] && return 1 || return 0
 }
 
+check_controller() {
+	if ! [ "$#" -eq 1 ]; then return 0; fi
+
+	if ! [ -f "$1/max_brightness" ] ||
+		! [ -f "$1/brightness" ] ||
+		! [ -r "$1/max_brightness" ] ||
+		! [ -r "$1/brightness" ] ; then
+		#! [ -w "${i}/brightness" ] ; then
+	return 0
+	fi
+	return 1
+}
+
 main() {
 	mFlag=false
 	MFlag=false
+	cFlag=false
 	aFlag=false
 	sFlag=false
 	SFlag=false
 
 	OPTIND=1
-	while getopts "hm:M:a:s:c:" opt; do
+	while getopts "hm:M:c:a:s:S:" opt; do
 		case $opt in
 			h) usage && exit 0;;
 			m)
@@ -66,6 +81,15 @@ main() {
 				if [ "$?" == 0 ]; then usage; exit 2; fi
 				MFlag=true
 				MArg=$OPTARG
+				;;
+			c)
+				check_controller "$OPTARG"
+				if [ "$?" -eq 0 ]; then
+					echo "Controller '$OPTARG' not found."
+					exit 1
+				fi
+				cFlag=true
+				cArg=$OPTARG
 				;;
 			a)
 				no_conjunction_with "$sFlag" "$SFlag"
@@ -96,28 +120,28 @@ main() {
 		esac
 	done
 
-	best_max=0
 	best_controller=
+	best_max=0
 
-	# Try to find the best-max-value controller
-	for i in `echo /sys/class/backlight/*` ; do
-		if ! [ -f "${i}/max_brightness" ] ||
-				! [ -f "${i}/brightness" ] ||
-				! [ -r "${i}/max_brightness" ] ||
-				! [ -r "${i}/brightness" ] ; then
-				#! [ -w "${i}/brightness" ] ; then
-			continue
-		fi
-		max=`cat ${i}/max_brightness`
-		if (( "$best_max" < "$max" )) ; then
-			best_max=$max
-			best_controller=${i}
-		fi
-	done
+	if [ "$cFlag" = true ] ; then
+		best_controller=$cArg
+		best_max=`cat $best_controller/max_brightness`
+	else
+		# Try to find the best-max-value controller
+		for i in `echo /sys/class/backlight/*` ; do
+			check_controller ${i}
+			[ "$?" -eq 0 ] && continue
+			max=`cat ${i}/max_brightness`
+			if (( "$best_max" < "$max" )) ; then
+				best_max=$max
+				best_controller=${i}
+			fi
+		done
 
-	if [ -z "$best_controller" ] ; then
-		echo "Controller not found."
-		exit 1
+		if [ -z "$best_controller" ] ; then
+			echo "Controller not found."
+			exit 1
+		fi
 	fi
 
 	own_min=0
