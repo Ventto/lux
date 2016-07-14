@@ -1,12 +1,12 @@
 Lightmano
 ===================
 
-# Description
+## Description
 Lightmano is a simple shell script (currently a first draft) to control backlight on GNU/Linux.
 It aims to have the same features than [Light](https://github.com/haikarainen/light)
 and a bit more to offset the tiny lack of configuration.
 
-# Features
+## Features (currently)
 
 *  Set a minimum brightness value, to make the screen plunges into total darkness.
 It happens sometimes from a certain value, if you decrease the brightness until
@@ -17,7 +17,7 @@ when 100 is achieved the screen is pitch black. So the friendly max is 99.
 Usually, when we keep pressing the shortcut to increase the brightness like nerotic,
 we expect dazzling screen.
 
-# Installation
+## Installation
 
 Currently the way to edit the write-protected *brightness* file is to add the
 following line in your *sudoers* file via **sudo visudio**:
@@ -27,7 +27,7 @@ following line in your *sudoers* file via **sudo visudio**:
 Conscious, that was a lazy method.
 In the near future, with more time (udev rule or root the script)
 
-# Usage
+## Usage
 <code> lightmano [option] [value] </code>
 
 The value has to be a **positive decimal**.
