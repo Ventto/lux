@@ -9,21 +9,22 @@
 #set -e
 
 usage() {
-	echo "Usage: brightness.sh <options> <values>"
-	echo "<value> has to be a positive decimal(raw mode)."
-	echo -e "<options> can be any of the following:\n"
+	echo "Usage: lightmano [OPTION]..."
+	echo -e "Option values are positive integers.\n"
 
 	echo "Operations:"
-	echo -e "-h:\tPrint this help and exits"
+	echo -e "-h:\tPrint this help and exits\n"
 
-	echo "Threshold:"
+	echo "Threshold (can be used in conjuntion):"
 	echo -e "-m:\tSet the minimum brightness"
-	echo -e "-M:\tSet the maximum brightness"
+	echo -e "-M:\tSet the maximum brightness\n"
 
-	echo "Controller (can be use with thresholds):"
+	echo "Controller (can not be use in conjunction):"
 	echo -e "-a:\tAdd value"
 	echo -e "-s:\tSubtract value"
-	echo -e "-c:\tSet value"
+	echo -e "-c:\tSet value\n"
+
+	echo -e "No option (read values):  <controller_path>: min;current;max\n"
 }
 
 no_conjunction_with() {
