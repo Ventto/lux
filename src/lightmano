@@ -81,7 +81,7 @@ main() {
 				;;
 			a)
 				no_conjunction_with "$cFlag" "$sFlag"
-				if [ "$?" == 0 ]; then exit; fi
+				if [ "$?" == 0 ]; then usage; exit 2; fi
 				is_positive_integer "$OPTARG"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
 				aFlag=true
@@ -89,7 +89,7 @@ main() {
 				;;
 			s)
 				no_conjunction_with "$aFlag" "$sFlag"
-				if [ "$?" == 0 ]; then exit; fi
+				if [ "$?" == 0 ]; then usage; exit 2; fi
 				is_positive_integer "$OPTARG"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
 				sFlag=true
@@ -97,7 +97,7 @@ main() {
 				;;
 			c)
 				no_conjunction_with "$aFlag" "$sFlag"
-				if [ "$?" == 0 ]; then exit; fi
+				if [ "$?" == 0 ]; then usage; exit 2; fi
 				is_positive_integer "$OPTARG"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
 				cFlag=true
