@@ -8,7 +8,7 @@ and a bit more to offset the tiny lack of configuration.
 
 ## Features (currently)
 
-*  Set a minimum brightness value, to make the screen plunges into total darkness.
+* Set a minimum brightness value, to make the screen plunges into total darkness.
 It happens sometimes from a certain value, if you decrease the brightness until
 before 0 the result is the same. So ergonomicly that value could be the minimum.
 
@@ -16,6 +16,8 @@ before 0 the result is the same. So ergonomicly that value could be the minimum.
 when 100 is achieved the screen is pitch black. So the friendly max is 99.
 Usually, when we keep pressing the shortcut to increase the brightness like nerotic,
 we expect dazzling screen.
+
+* Figure out the best max-brightness-value controller.
 
 ## Installation
 
