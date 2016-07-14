@@ -131,9 +131,8 @@ main() {
 
 	# Increase the current value
 	if [ "$aFlag" = true ]; then
-		value=$(( brightness+valArg ))
-		if (( $value < $own_min )) ; then
-			value=$own_min
+		if (( $brightness == 0 )) ; then
+			value=$(( own_min+valArg ))
 		elif (( $value > $own_max )) ; then
 			value=$own_max
 		fi
