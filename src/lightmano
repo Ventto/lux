@@ -98,6 +98,8 @@ main() {
 
 	best_max=0
 	best_controller=
+
+	# Try to find the best-max-value controller
 	for i in `echo /sys/class/backlight/*` ; do
 		if ! [ -f "${i}/max_brightness" ] ||
 				! [ -f "${i}/brightness" ] ||
