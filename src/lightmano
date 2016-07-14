@@ -144,7 +144,7 @@ main() {
 	# Decrease the current value
 	if [ "$sFlag" = true ]; then
 		value=$(( brightness-valArg ))
-		[[ $value < $own_min ]] && value=0
+		(( $value <= $own_min )) && value=0
 		echo "Decrease: $value"
 		echo $value | sudo /usr/bin/tee $file
 	fi
