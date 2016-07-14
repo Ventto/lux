@@ -1,5 +1,5 @@
-!README.md
-!LICENSE
+!./README.md
+!./LICENSE
 
 src/*
 !src/lightmano
