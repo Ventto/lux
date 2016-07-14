@@ -14,8 +14,10 @@ before 0 the result is the same. So ergonomicly that value could be the minimum.
 
 * Set a maximum brightness value, as some controllers, the max value is 100 but
 when 100 is achieved the screen is pitch black. So the friendly max is 99.
-Usually, when we keep pressing the shortcut to increase the brightness like nerotic,
-we expect dazzling screen.
+That's why by default after reboot the brightness is set 99 automatically.
+For the sake of ergonomy, when we keep pressing the shortcut to increase the brightness like nerotic,
+we expect well lit screen. Moreover for some dazzling backlightings, the last
+5% or 10% could be useless.
 
 * Figure out the best max-brightness-value controller.
 
@@ -35,13 +37,12 @@ In the near future, with more time (udev rule or root the script)
 The option values are positive integers.
 To enable percent mode, add '%' after the value.
 
-### To set the thresholds
+### Config options
 * -m:	Set the minimum brightness
-* -M:	Set the maximum brightness (useless if greater than the real max
-brightness value)
+* -M:	Set the maximum brightness
 * -c:	Set the controller
 
-### To set the brightness (can be use with the threshold options)
+### Brightness setter options (can be used in conjunction with config options)
 * -a:	Add value
 * -s:	Subtract value
 * -S:	Set the current brightness value
@@ -54,6 +55,7 @@ $ lightmano -S 35
 $ lightmano -m 30 -M 99 -a 10
 $ lightmano -a 15%
 $ lightmano -m 10 -M 80 -S 50%
+$ lightmano -c /sys/class/backlight/nv_backlight -s 10
 ```
 
 ## TODO
