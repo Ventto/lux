@@ -45,34 +45,6 @@ is_positive_integer() {
 }
 
 main() {
-
-	best_max=0
-	best_controller=
-	for i in `echo /sys/class/backlight/*` ; do
-		if ! [ -f "${i}/max_brightness" ] ||
-				! [ -f "${i}/brightness" ] ||
-				! [ -r "${i}/max_brightness" ] ||
-				! [ -r "${i}/brightness" ] ; then
-				#! [ -w "${i}/brightness" ] ; then
-			continue
-		fi
-		max=`cat ${i}/max_brightness`
-		if (( "$best_max" < "$max" )) ; then
-			best_max=$max
-			best_controller=${i}
-		fi
-	done
-
-	own_min=0
-	own_max=$(( best_max-1 ))
-	file="$best_controller/brightness"
-	brightness=$(cat $file)
-
-	if [ "$#" -eq 0 ]; then
-		echo "$best_controller: $own_min;$brightness;$own_max"
-		exit 0
-	fi
-
 	mFlag=false
 	MFlag=false
 	aFlag=false
@@ -124,7 +96,32 @@ main() {
 		esac
 	done
 
-	shift "$((OPTIND-1))"
+	best_max=0
+	best_controller=
+	for i in `echo /sys/class/backlight/*` ; do
+		if ! [ -f "${i}/max_brightness" ] ||
+				! [ -f "${i}/brightness" ] ||
+				! [ -r "${i}/max_brightness" ] ||
+				! [ -r "${i}/brightness" ] ; then
+				#! [ -w "${i}/brightness" ] ; then
+			continue
+		fi
+		max=`cat ${i}/max_brightness`
+		if (( "$best_max" < "$max" )) ; then
+			best_max=$max
+			best_controller=${i}
+		fi
+	done
+
+	own_min=0
+	own_max=$(( best_max-1 ))
+	file="$best_controller/brightness"
+	brightness=$(cat $file)
+
+	if [ "$#" -eq 0 ]; then
+		echo "$best_controller: $own_min;$brightness;$own_max"
+		exit 0
+	fi
 
 	# No set option
 	if [ "$aFlag" = false ] && [ "$sFlag" = false ] && [ "$cFlag" = false ]
@@ -160,6 +157,8 @@ main() {
 		fi
 		echo $value | sudo /usr/bin/tee $file
 	fi
+
+	shift "$((OPTIND-1))"
 }
 
 main "$@"
