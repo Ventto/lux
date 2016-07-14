@@ -123,9 +123,10 @@ main() {
 
 	# Increase the current value
 	if [ "$aFlag" = true ]; then
+		value=$(( brightness+valArg ))
 		if (( $brightness == 0 )) ; then
 			value=$(( own_min+valArg ))
-		elif (( $value > $own_max )) ; then
+		elif (( "$value" > "$own_max" )) ; then
 			value=$own_max
 		fi
 		echo $value | sudo /usr/bin/tee $file
