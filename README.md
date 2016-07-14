@@ -2,9 +2,10 @@ Lightmano
 ===================
 
 ## Description
-Lightmano is a simple shell script (currently a first draft) to control backlight on GNU/Linux.
-It aims to have the same features than [Light](https://github.com/haikarainen/light)
-and a bit more to offset the tiny lack of configuration.
+Lightmano is a simple shell script (currently a first draft) to control
+backlight on GNU/Linux. It aims to have the same features than
+[Light](https://github.com/haikarainen/light) and a bit more to offset the tiny
+lack of configuration.
 
 ## Features (currently)
 
@@ -15,21 +16,21 @@ before 0 the result is the same. So ergonomicly that value could be the minimum.
 * Set a maximum brightness value, as some controllers, the max value is 100 but
 when 100 is achieved the screen is pitch black. So the friendly max is 99.
 That's why by default after reboot the brightness is set 99 automatically.
-For the sake of ergonomy, when we keep pressing the shortcut to increase the brightness like nerotic,
-we expect well lit screen. Moreover for some dazzling backlightings, the last
-5% or 10% could be useless.
+For the sake of ergonomy, when we keep pressing the shortcut to increase
+the brightness like nerotic, we expect well lit screen. Moreover for some
+dazzling backlightings, the last 5% or 10% could be useless.
 
 * Figure out the best max-brightness-value controller.
 
 ## Installation
 
-Currently the way to edit the write-protected *brightness* file is to add the
-following line in your *sudoers* file via **sudo visudio**:
+'Currently' the way to edit the write-protected *brightness* file for any
+controller is to add the following line in your *sudoers* file via
+**sudo visudio**:
 
-`<username> ALL=NOPASSWD: /usr/bin/tee /sys/class/backlight/<controller_name>/brightness`
+`<username> ALL=NOPASSWD: /usr/bin/tee /sys/class/backlight/*/brightness`
 
-Conscious, that was a lazy method.
-In the near future, with more time (udev rule or root the script)
+Run the script.
 
 ## Usage
 <code> lightmano [OPTION]... </code>
