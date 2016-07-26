@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # -------------------------------------------------------
 # A shell script that sets the brightness level
@@ -6,26 +6,26 @@
 # Last updated on: 2016/7/11
 # -------------------------------------------------------
 
-#set -e
-
 usage() {
-	echo "Usage: lightmano [OPTION]..."
-	echo -e "Option values are positive integers.\n"
+	echo -e "Usage: lightmano [OPTION]...
+Option values are positive integers.
 
-	echo "Operations:"
-	echo -e "-h:\tPrint this help and exits\n"
+Information:
+  (none):\tPrint the selected controller's name and the brightness thresholds.
+  -h:\t\tPrint this help and exit
 
-	echo "Threshold (can be used in conjuntion):"
-	echo -e "-m:\tSet the minimum brightness"
-	echo -e "-M:\tSet the maximum brightness"
-	echo -e "-c:\tSet the controller\n"
+Configuration options (can be used in conjuntion):
+  -m:\tSet the minimum brightness
+  -M:\tSet the maximum brightness
+  -c:\tSet the controller
 
-	echo "Controller (can not be use in conjunction):"
-	echo -e "-a:\tAdd value"
-	echo -e "-s:\tSubtract value"
-	echo -e "-S:\tSet the brightness\n"
+Brightness options (can not be use in conjunction):
+  -a:\tAdd value
+  -s:\tSubtract value
+  -S:\tSet the brightness
 
-	echo -e "No option (read values):  <controller_path>: min;current;max\n"
+More information:
+https://github.com/StupidShellScripts/lightmano\n"
 }
 
 no_conjunction_with() {
