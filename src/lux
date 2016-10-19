@@ -89,13 +89,14 @@ main() {
 				MArg=$OPTARG
 				;;
 			c)
-				check_controller "$OPTARG"
+				controller_path="/sys/class/backlight/$OPTARG"
+				check_controller $controller_path
 				if [ "$?" -eq 0 ]; then
-					echo "Controller '$OPTARG' not found."
+					echo "$controller_path: controller not found."
 					exit 1
 				fi
 				cFlag=true
-				cArg=$OPTARG
+				cArg=$controller_path
 				;;
 			a)
 				no_conjunction_with "$sFlag" "$SFlag"
