@@ -64,13 +64,14 @@ check_controller() {
 }
 
 main() {
+	local PERCENT_MODE=false
+
 	local mFlag=false
 	local MFlag=false
 	local cFlag=false
 	local aFlag=false
 	local sFlag=false
 	local SFlag=false
-	local PERCENT_MODE=false
 
 	OPTIND=1
 	while getopts "hm:M:c:a:s:S:" opt; do
@@ -142,7 +143,7 @@ main() {
 		esac
 	done
 
-	local best_controller=
+	local best_controller=""
 	local best_max=0
 
 	if [ "$cFlag" = true ] ; then
