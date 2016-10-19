@@ -39,19 +39,19 @@ to setup the relevant permissions at boot time.
 ## Usage
 <code> lux [OPTION]... </code>
 
-The option values are positive integers.
+The option values are positive integers.<br />
 To enable percent mode, add '%' after the value.
 
 ### Information:
 * (none):	Print values: {controller_name}:  {minimum;current;maximum}
 * -h:		Print this help and exit
 
-### Configuration options
-* -m:	Set the minimum brightness
-* -M:	Set the maximum brightness
-* -c:	Set the controller
+### Configuration options (can be used in conjunction with brightness options)
+* -m: Set the minimum brightness
+* -M: Set the maximum brightness
+* -c {controller}: Set the controller (/sys/class/backlight/{controller})
 
-### Brightness options (can be used in conjunction with config options)
+### Brightness options (cannot be used in conjunction)
 * -a:	Add value
 * -s:	Subtract value
 * -S:	Set the current brightness value
