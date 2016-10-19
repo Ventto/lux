@@ -9,23 +9,21 @@
 usage() {
 	echo -e "Usage: lux [OPTION]...
 Option values are positive integers.
+For percent mode: add '%' after value.
 
 Information:
-  (none):\tPrint the selected controller's name and the brightness thresholds.
-  -h:\t\tPrint this help and exit
+  (none):\t\tPrint the selected controller's name and the brightness thresholds.
+  -h:\t\t\tPrint this help and exit
 
-Configuration options (can be used in conjuntion):
-  -m:\tSet the minimum brightness
-  -M:\tSet the maximum brightness
-  -c:\tSet the controller
+Configuration options (can be used in conjunction with brightness options):
+  -m:\t\t\tSet the minimum brightness
+  -M:\t\t\tSet the maximum brightness
+  -c {controller}:\tSet the controller (/sys/class/backlight/{controller})
 
 Brightness options (can not be use in conjunction):
-  -a:\tAdd value
-  -s:\tSubtract value
-  -S:\tSet the brightness
-
-More information:
-https://github.com/StupidShellScripts/lux\n"
+  -a:\t\t\tAdd value
+  -s:\t\t\tSubtract value
+  -S:\t\t\tSet the brightness"
 }
 
 no_conjunction_with() {
@@ -46,7 +44,7 @@ is_positive_integer() {
 }
 
 is_percentage() {
-	out=`echo $1 | grep -e "%$"`
+	local out=`echo $1 | grep -e "%$"`
 	if [ -z "$out" ]; then
 		return 0
 	fi
@@ -67,13 +65,13 @@ check_controller() {
 }
 
 main() {
-	mFlag=false
-	MFlag=false
-	cFlag=false
-	aFlag=false
-	sFlag=false
-	SFlag=false
-	PERCENT_MODE=false
+	local mFlag=false
+	local MFlag=false
+	local cFlag=false
+	local aFlag=false
+	local sFlag=false
+	local SFlag=false
+	local PERCENT_MODE=false
 
 	OPTIND=1
 	while getopts "hm:M:c:a:s:S:" opt; do
@@ -144,8 +142,8 @@ main() {
 		esac
 	done
 
-	best_controller=
-	best_max=0
+	local best_controller=
+	local best_max=0
 
 	if [ "$cFlag" = true ] ; then
 		best_controller=$cArg
@@ -168,10 +166,10 @@ main() {
 		fi
 	fi
 
-	own_min=0
-	own_max=$(( best_max-1 ))
-	file="$best_controller/brightness"
-	brightness=$(cat $file)
+	local own_min=0
+	local own_max=$(( best_max-1 ))
+	local file="$best_controller/brightness"
+	local brightness=$(cat $file)
 
 	if [ "$#" -eq 0 ]; then
 		echo "$best_controller: $own_min;$brightness;$own_max"
