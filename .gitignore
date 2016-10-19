@@ -2,7 +2,7 @@
 
 !src/
 src/*
-!src/lightmano
+!src/lux
 
 !README.md
 !LICENSE

@@ -1,7 +1,7 @@
-Lightmano
-===================
+Lux
+===
 
-*Lightmano is a simple shell script (currently a first draft) to control
+*Lux is a simple shell script (currently a first draft) to control
 backlight on GNU/Linux. It aims to have the same features than
 [Light](https://github.com/haikarainen/light) and a bit more to offset the tiny
 lack of configuration.*
@@ -37,7 +37,7 @@ SUBSYSTEM=="backlight", ACTION=="add", RUN+="/bin/chmod g+w /sys/class/backlight
 to setup the relevant permissions at boot time.
 
 ## Usage
-<code> lightmano [OPTION]... </code>
+<code> lux [OPTION]... </code>
 
 The option values are positive integers.
 To enable percent mode, add '%' after the value.
@@ -58,33 +58,33 @@ To enable percent mode, add '%' after the value.
 
 ## Examples
 ```
-$ lightmano
+$ lux
 /sys/class/backlight/nv_backlight: 0;43;99
 
-$ lightmano -S 35
-$ lightmano -a 15%
-$ lightmano -s 30
+$ lux -S 35
+$ lux -a 15%
+$ lux -s 30
 
-$ lightmano -m 30 -M 99 -a 10
-$ lightmano -m 10 -M 80 -S 50%
+$ lux -m 30 -M 99 -a 10
+$ lux -m 10 -M 80 -S 50%
 
-$ lightmano -c /sys/class/backlight/nv_backlight -s 10
+$ lux -c /sys/class/backlight/nv_backlight -s 10
 ```
 
 ## FAQ
 Anwsers are only written to inspire you. They do not reflect your own configuration.
 
 ### Set the brightness value at startx ?
-`echo "lightmano -S {row value|percent value}" > $HOME/.xinitrc`
+`echo "lux -S {row value|percent value}" > $HOME/.xinitrc`
 
 ### From 0 to 20, there is no difference. A lead ?
-Sometimes, it happens. Lightmano was partially written to troubleshoot it.<br>
+Sometimes, it happens. Lux was partially written to troubleshoot it.<br>
 Set the minimum with 20.<br>
-`lightmano [-a|-s|-S] {row value|percent value} -m 20`
+`lux [-a|-s|-S] {row value|percent value} -m 20`
 
 ### Pitchblack at 100 ?
 Set the maximum with 99.<br>
-`lightmano [-a|-s|-S] {row value|percent value} -M 99`
+`lux [-a|-s|-S] {row value|percent value} -M 99`
 
 
 ## TODO
@@ -94,10 +94,10 @@ Set the maximum with 99.<br>
 * Add -G option to display adapted brightness percentage according to min/max settings
 Example:
 ```
-$ lightmano
+$ lux
 /sys/class/backlight/nv_backlight: 0;43;99   <-- output: row values from ./nv_backlight/
 
-$ lightmano -m 10 -M 80 -G   <-- gap=80-10=70, current=43, 43*70/100~=30%
+$ lux -m 10 -M 80 -G   <-- gap=80-10=70, current=43, 43*70/100~=30%
 30%                          <-- output: percent value (<> row value)
 ```
 * Keep the last brightness value after rebooting

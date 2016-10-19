@@ -7,7 +7,7 @@
 # -------------------------------------------------------
 
 usage() {
-	echo -e "Usage: lightmano [OPTION]...
+	echo -e "Usage: lux [OPTION]...
 Option values are positive integers.
 
 Information:
@@ -25,7 +25,7 @@ Brightness options (can not be use in conjunction):
   -S:\tSet the brightness
 
 More information:
-https://github.com/StupidShellScripts/lightmano\n"
+https://github.com/StupidShellScripts/lux\n"
 }
 
 no_conjunction_with() {
