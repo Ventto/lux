@@ -92,7 +92,7 @@ main() {
 				;;
 			a)
 				no_conjunction_with "$sFlag" "$SFlag"
-				if [ "$?" -eq 0 ]; then usage; exit 2; fi
+				[ "$?" -eq 0 ] && usage && exit 2
 				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
@@ -103,7 +103,7 @@ main() {
 				;;
 			s)
 				no_conjunction_with "$aFlag" "$SFlag"
-				if [ "$?" -eq 0 ]; then usage; exit 2; fi
+				[ "$?" -eq 0 ] && usage && exit 2
 				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
@@ -114,7 +114,7 @@ main() {
 				;;
 			S)
 				no_conjunction_with "$aFlag" "$sFlag"
-				if [ "$?" -eq 0 ]; then usage; exit 2; fi
+				[ "$?" -eq 0 ] && usage && exit 2
 				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
