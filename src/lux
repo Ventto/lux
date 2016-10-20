@@ -60,10 +60,7 @@ is_percentage() {
 }
 
 check_controller() {
-	if ! [ -f "$1/max_brightness" ] || ! [ -f "$1/brightness" ]; then
-		return 1
-	fi
-	return 0
+	[ ! -d "${1}" ] && return 1 || return 0
 }
 
 main() {
