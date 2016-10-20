@@ -39,13 +39,7 @@ no_conjunction() {
 	while [ $# -ne 0 ]; do
 		[ "$1" = true ] && break || shift
 	done
-
-	if [ $# -eq 0 ]; then
-		echo 1
-	fi
-
-	echo "Operation arguments can not be used in conjunction."
-	echo 0
+	[ $# -eq 0 ] && echo 1 || echo 0
 }
 
 is_positive_int() {
@@ -91,7 +85,7 @@ main() {
 				cArg=$controller_path
 				;;
 			a)
-				[ $(no_conjunction $sFlag $SFlag) == "0" ] && usage && exit 2
+				[ $(no_conjunction $sFlag $SFlag) != "1" ] && usage && exit 2
 				if [ "$(is_percentage $OPTARG)" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
@@ -101,7 +95,7 @@ main() {
 				valArg=$OPTARG
 				;;
 			s)
-				[ $(no_conjunction $aFlag $SFlag) == "0" ] && usage && exit 2
+				[ $(no_conjunction $aFlag $SFlag) != "1" ] && usage && exit 2
 				if [ "$(is_percentage $OPTARG)" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
@@ -111,7 +105,7 @@ main() {
 				valArg=$OPTARG
 				;;
 			S)
-				[ $(no_conjunction $aFlag $sFlag) == "0" ] && usage && exit 2
+				[ $(no_conjunction $aFlag $sFlag) != "1" ] && usage && exit 2
 				if [ "$(is_percentage $OPTARG)" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
