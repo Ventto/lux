@@ -35,7 +35,7 @@ This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.\n"
 }
 
-no_conjunction_with() {
+no_conjunction() {
 	while [ $# -ne 0 ]; do
 		[ "$1" = true ] && break || shift
 	done
@@ -48,7 +48,7 @@ no_conjunction_with() {
 	return 0
 }
 
-is_positive_integer() {
+is_positive_int() {
 	[[ "$1" =~ ^[0-9]+$ ]] && echo 1 || echo 0
 }
 
@@ -72,12 +72,12 @@ main() {
 			h) usage && exit 0;;
 			v) version && exit 0;;
 			m)
-				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
 				mFlag=true
 				mArg=$OPTARG
 				;;
 			M)
-				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
 				MFlag=true
 				MArg=$OPTARG
 				;;
@@ -91,35 +91,32 @@ main() {
 				cArg=$controller_path
 				;;
 			a)
-				no_conjunction_with "$sFlag" "$SFlag"
-				[ "$?" -eq 0 ] && usage && exit 2
+				[ $(no_conjunction $aFlag $sFlag) = "0" ] && usage && exit 2
 				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
-				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
 				aFlag=true
 				valArg=$OPTARG
 				;;
 			s)
-				no_conjunction_with "$aFlag" "$SFlag"
-				[ "$?" -eq 0 ] && usage && exit 2
+				[ $(no_conjunction $aFlag $sFlag) = "0" ] && usage && exit 2
 				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
-				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
 				sFlag=true
 				valArg=$OPTARG
 				;;
 			S)
-				no_conjunction_with "$aFlag" "$sFlag"
-				[ "$?" -eq 0 ] && usage && exit 2
+				[ $(no_conjunction $aFlag $sFlag) = "0" ] && usage && exit 2
 				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
-				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
 				SFlag=true
 				valArg=$OPTARG
 				;;
