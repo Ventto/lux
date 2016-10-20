@@ -57,13 +57,14 @@ is_percentage() {
 }
 
 main() {
-	local PERCENT_MODE=false
 	local mFlag=false
 	local MFlag=false
 	local cFlag=false
 	local aFlag=false
 	local sFlag=false
 	local SFlag=false
+
+	local percent_mode=false
 
 	OPTIND=1
 	while getopts "hvm:M:c:a:s:S:" opt; do
@@ -96,7 +97,7 @@ main() {
 				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				is_percentage "$OPTARG"
 				if [ "$?" -eq 1 ]; then
-					PERCENT_MODE=true
+					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
 				is_positive_integer "$OPTARG"
@@ -109,7 +110,7 @@ main() {
 				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				is_percentage "$OPTARG"
 				if [ "$?" -eq 1 ]; then
-					PERCENT_MODE=true
+					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
 				is_positive_integer "$OPTARG"
@@ -122,7 +123,7 @@ main() {
 				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				is_percentage "$OPTARG"
 				if [ "$?" -eq 1 ]; then
-					PERCENT_MODE=true
+					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
 				is_positive_integer "$OPTARG"
@@ -170,7 +171,7 @@ main() {
 	[ "$MFlag" = true ] && own_max=$MArg
 
 	if [ "$aFlag" = true ]; then
-		if [ "$PERCENT_MODE" = true ]; then
+		if [ "$percent_mode" = true ]; then
 			valArg=$(( (own_max - own_min) * valArg / 100 ))
 		fi
 		value=$(( brightness+valArg ))
@@ -183,7 +184,7 @@ main() {
 	fi
 
 	if [ "$sFlag" = true ]; then
-		if [ "$PERCENT_MODE" = true ]; then
+		if [ "$percent_mode" = true ]; then
 			valArg=$(( (own_max - own_min) * valArg / 100 ))
 		fi
 		value=$(( brightness-valArg ))
@@ -192,7 +193,7 @@ main() {
 	fi
 
 	if [ "$SFlag" = true ]; then
-		if [ "$PERCENT_MODE" = true ]; then
+		if [ "$percent_mode" = true ]; then
 			valArg=$(( own_min + (own_max - own_min) * valArg / 100 ))
 		fi
 		value=$valArg
