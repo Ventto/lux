@@ -33,7 +33,6 @@ This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.\n"
 }
 
-
 no_conjunction_with() {
 	while [ $# -ne 0 ]; do
 		[ "$1" = true ] && break || shift
@@ -52,11 +51,7 @@ is_positive_integer() {
 }
 
 is_percentage() {
-	local out=`echo $1 | grep -e "%$"`
-	if [ -z "$out" ]; then
-		return 0
-	fi
-	return 1
+	[ -z "$(echo $1 | grep -e "%$")" ] && return 0 || return 1
 }
 
 check_controller() {
@@ -65,7 +60,6 @@ check_controller() {
 
 main() {
 	local PERCENT_MODE=false
-
 	local mFlag=false
 	local MFlag=false
 	local cFlag=false
@@ -161,7 +155,6 @@ main() {
 				best_controller=${i}
 			fi
 		done
-
 		[ "${i: -1}" == "*"  ] && echo "There is no controller" && exit 0
 	fi
 
@@ -173,11 +166,7 @@ main() {
 	if [ "$#" -eq 0 ]; then
 		echo "$best_controller $own_min;$brightness;$own_max"
 		exit 0
-	fi
-
-	# No set option
-	if [ "$aFlag" = false ] && [ "$sFlag" = false ] && [ "$SFlag" = false ]
-	then
+	elif [ $# -eq 2 ] && [ "$cFlag" = true ]; then
 		usage; exit 0
 	fi
 
