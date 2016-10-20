@@ -27,34 +27,47 @@ dazzling backlightings, the last 5% or 10% could be useless.
 
 Normally, users are prohibited to alter files in the sys filesystem. It's advisable to setup an "udev" rule to allow users in the "video" group to set the display brightness.
 
-To do so, place a file in /etc/udev/rules.d/90-backlight.rules containing:
+* To do so, place a file in /etc/udev/rules.d/90-backlight.rules containing:
 
 ```
 SUBSYSTEM=="backlight", ACTION=="add", RUN+="/bin/chgrp video /sys/class/backlight/%k/brightness"
 SUBSYSTEM=="backlight", ACTION=="add", RUN+="/bin/chmod g+w /sys/class/backlight/%k/brightness"
 ```
 
-to setup the relevant permissions at boot time.
+* Then add the user to the group:
+
+```
+$ sudo usermod -a -G video <user>
+```
+
+* To setup the relevant permissions at boot time.
 
 ## Usage
 <code> lux [OPTION]... </code>
+Brightness's option values are positive integers.
 
-The option values are positive integers.<br />
-To enable percent mode, add '%' after the value.
+For percent mode: add '%' after values. Percent mode can only be used with
+brightness value options.
 
-### Information:
-* (none):	Print values: {controller_name}:  {minimum;current;maximum}
-* -h:		Print this help and exit
+#### Information:
+* blank:	Prints controller's name and brightness info;
+  Pattern: {controller} {min;value;max}
+* -h:		Prints this help and exits
+* -v:		Prints version info and exists
 
-### Configuration options (can be used in conjunction with brightness options)
-* -m: Set the minimum brightness
-* -M: Set the maximum brightness
-* -c {controller}: Set the controller (/sys/class/backlight/{controller})
+#### Brightness threshold options (can be used in conjunction):
+* -m:		Set the brightness min
+* -M:		Set the brightness max
 
-### Brightness options (cannot be used in conjunction)
-* -a:	Add value
-* -s:	Subtract value
-* -S:	Set the current brightness value
+#### Brightness value options (can not be use in conjunction):
+* -a:		Add value
+* -s:		Subtract value
+* -S:		Set the brightness value
+
+#### Controller options (can be used with brightness options):
+* -c:		Set the controller to use (needs argument). <br />
+  Use any controller name in /sys/class/backlight/ as argument.<br/>
+  Otherwise a controller is automatically chosen (default)
 
 ## Examples
 ```
