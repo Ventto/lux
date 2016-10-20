@@ -171,10 +171,7 @@ main() {
 			fi
 		done
 
-		if [ -z "$best_controller" ] ; then
-			echo "Controller not found."
-			exit 1
-		fi
+		[ "${i: -1}" == "*"  ] && echo "There is no controller" && exit 0
 	fi
 
 	local own_min=0
