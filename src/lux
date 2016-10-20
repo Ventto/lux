@@ -173,7 +173,7 @@ main() {
 	local brightness=$(cat $file)
 
 	if [ "$#" -eq 0 ]; then
-		echo "$best_controller: $own_min;$brightness;$own_max"
+		echo "$best_controller $own_min;$brightness;$own_max"
 		exit 0
 	fi
 
