@@ -8,23 +8,37 @@
 
 usage() {
 	echo -e "Usage: lux [OPTION]...
-Option values are positive integers.
+Brightness's option values are positive integers.
 For percent mode: add '%' after value.
 
 Information:
-  (none):\t\tPrint the selected controller's name and the brightness thresholds.
-  -h:\t\t\tPrint this help and exit
+  -h:\t\t\tPrints this help and exits
+  -v:\t\t\tPrints version info and exists
+  (none):\t\tPrints controller's name and brightness info
+  \t\t\t\"{controller} {min;value;max}\"
 
-Configuration options (can be used in conjunction with brightness options):
-  -m:\t\t\tSet the minimum brightness
-  -M:\t\t\tSet the maximum brightness
-  -c {controller}:\tSet the controller (/sys/class/backlight/{controller})
+Brightness threshold options (can be used in conjunction):
+  -m:\t\t\tSet the brightness min
+  -M:\t\t\tSet the brightness max
 
-Brightness options (can not be use in conjunction):
+Brightness value options (can not be use in conjunction):
   -a:\t\t\tAdd value
   -s:\t\t\tSubtract value
-  -S:\t\t\tSet the brightness"
+  -S:\t\t\tSet the brightness value
+
+Controller options (can be used with brightness options):
+  -c {controller}:\tSet the controller (/sys/class/backlight/{controller})\n"
 }
+
+version() {
+	echo -e "Lux 0.5 (beta)
+Copyright (C) 2016 Thomas Venriès.
+License GPLv3+: GNU GPL version 3 or later
+<http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.\n"
+}
+
 
 no_conjunction_with() {
 	while [ $# -ne 0 ]; do
@@ -74,9 +88,10 @@ main() {
 	local SFlag=false
 
 	OPTIND=1
-	while getopts "hm:M:c:a:s:S:" opt; do
+	while getopts "hvm:M:c:a:s:S:" opt; do
 		case $opt in
 			h) usage && exit 0;;
+			v) version && exit 0;;
 			m)
 				is_positive_integer "$OPTARG"
 				if [ "$?" == 0 ]; then usage; exit 2; fi
