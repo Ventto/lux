@@ -22,8 +22,7 @@ Brightness value options (can not be use in conjunction):
 
 Controller options (can be used with brightness options):
   -c:\t\tSet the controller '/sys/class/backlight/{controller}' (needs arg),
-  \t\totherwise a controller is automatically chosen (default)\n
-"
+  \t\totherwise a controller is automatically chosen (default)\n"
 }
 
 version() {
