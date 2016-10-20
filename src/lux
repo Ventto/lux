@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# -------------------------------------------------------
-# A shell script that sets the brightness level
-# Written by: Thomas Venries
-# Last updated on: 2016/7/11
-# -------------------------------------------------------
-
 usage() {
 	echo -e "Usage: lux [OPTION]...
 Brightness's option values are positive integers.
