@@ -2,14 +2,15 @@
 
 usage() {
 	echo -e "Usage: lux [OPTION]...
-Brightness's option values are positive integers.
-For percent mode: add '%' after value.
+Brightness's option values are positive integers.\n
+For percent mode: add '%' after values. Percent mode can only be used with
+brightness value options.
 
 Information:
+  blank:\tPrints controller's name and brightness info;
+  \t\tpattern: {controller} {min;value;max}
   -h:\t\tPrints this help and exits
   -v:\t\tPrints version info and exists
-  (none):\tPrints controller's name and brightness info
-  \t\t\"{controller} {min;value;max}\"
 
 Brightness threshold options (can be used in conjunction):
   -m:\t\tSet the brightness min
@@ -21,17 +22,18 @@ Brightness value options (can not be use in conjunction):
   -S:\t\tSet the brightness value
 
 Controller options (can be used with brightness options):
-  -c:\t\tSet the controller '/sys/class/backlight/{controller}' (needs arg),
-  \t\totherwise a controller is automatically chosen (default)\n"
+  -c:\t\tSet the controller to use (needs argument). Use any controller name in
+  \t\t/sys/class/backlight/ as argument.\n\t\tOtherwise a controller is automatically chosen (default)\n"
 }
 
 version() {
 	echo -e "Lux 0.5 (beta)
-Copyright (C) 2016 Thomas Venriès.
+Copyright (C) 2016 Thomas \"Ventto\" Venries.\n
 License GPLv3+: GNU GPL version 3 or later
 <http://gnu.org/licenses/gpl.html>.
 This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.\n"
+There is NO WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE\n"
 }
 
 no_conjunction() {
