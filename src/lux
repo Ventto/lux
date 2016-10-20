@@ -56,10 +56,6 @@ is_percentage() {
 	[ -z "$(echo $1 | grep -e "%$")" ] && return 0 || return 1
 }
 
-check_controller() {
-	[ ! -d "${1}" ] && return 0 || return 1
-}
-
 main() {
 	local PERCENT_MODE=false
 	local mFlag=false
@@ -87,9 +83,8 @@ main() {
 				MArg=$OPTARG
 				;;
 			c)
-				controller_path="/sys/class/backlight/$OPTARG"
-				check_controller $controller_path
-				if [ "$?" -eq 0 ]; then
+				local controller_path="/sys/class/backlight/$OPTARG"
+				if [ ! -d "$controller_path" ]; then
 					echo "$controller_path: controller not found."
 					exit 0
 				fi
@@ -145,19 +140,18 @@ main() {
 
 	if [ "$cFlag" = true ] ; then
 		best_controller=$cArg
-		best_max=`cat $best_controller/max_brightness`
+		best_max=$(cat $best_controller/max_brightness)
+	# Try to find the best-max-value controller
 	else
-		# Try to find the best-max-value controller
-		for i in `echo /sys/class/backlight/*` ; do
-			check_controller ${i}
-			[ "$?" -ne 1 ] && continue
-			max=`cat ${i}/max_brightness`
+		for i in $(echo /sys/class/backlight/*) ; do
+			[ "${i: -1}" == "*"  ] && continue
+			max=$(cat ${i}/max_brightness)
 			if (( "$best_max" < "$max" )) ; then
 				best_max=$max
 				best_controller=${i}
 			fi
 		done
-		[ "${i: -1}" == "*"  ] && echo "There is no controller" && exit 0
+		[ -z "$best_controller"  ] && echo "There is no controller" && exit 0
 	fi
 
 	local own_min=0
