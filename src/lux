@@ -71,7 +71,8 @@ check_controller() {
 	if ! [ -f "$1/max_brightness" ] ||
 		! [ -f "$1/brightness" ] ||
 		! [ -r "$1/max_brightness" ] ||
-		! [ -r "$1/brightness" ] ; then
+		! [ -r "$1/brightness" ] ||
+		! [ -w "$1/brightness" ] ; then
 	return 0
 	fi
 	return 1
