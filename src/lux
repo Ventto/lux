@@ -154,7 +154,7 @@ main() {
 	done
 
 	local best_controller=""
-	local best_max=0
+	local best_max=-1
 
 	if [ "$cFlag" = true ] ; then
 		best_controller=$cArg
