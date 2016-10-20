@@ -89,20 +89,20 @@ main() {
 			v) version && exit 0;;
 			m)
 				is_positive_integer "$OPTARG"
-				if [ "$?" == 0 ]; then usage; exit 2; fi
+				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				mFlag=true
 				mArg=$OPTARG
 				;;
 			M)
 				is_positive_integer "$OPTARG"
-				if [ "$?" == 0 ]; then usage; exit 2; fi
+				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				MFlag=true
 				MArg=$OPTARG
 				;;
 			c)
 				controller_path="/sys/class/backlight/$OPTARG"
 				check_controller $controller_path
-				if [ "$?" == 1 ]; then
+				if [ "$?" -eq 1 ]; then
 					echo "$controller_path: controller not found."
 					exit 0
 				fi
@@ -111,40 +111,40 @@ main() {
 				;;
 			a)
 				no_conjunction_with "$sFlag" "$SFlag"
-				if [ "$?" == 0 ]; then usage; exit 2; fi
+				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				is_percentage "$OPTARG"
-				if [ "$?" == 1 ]; then
+				if [ "$?" -eq 1 ]; then
 					PERCENT_MODE=true
 					OPTARG=`echo $OPTARG | cut -d % -f 1`
 				fi
 				is_positive_integer "$OPTARG"
-				if [ "$?" == 0 ]; then usage; exit 2; fi
+				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				aFlag=true
 				valArg=$OPTARG
 				;;
 			s)
 				no_conjunction_with "$aFlag" "$SFlag"
-				if [ "$?" == 0 ]; then usage; exit 2; fi
+				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				is_percentage "$OPTARG"
-				if [ "$?" == 1 ]; then
+				if [ "$?" -eq 1 ]; then
 					PERCENT_MODE=true
 					OPTARG=`echo $OPTARG | cut -d % -f 1`
 				fi
 				is_positive_integer "$OPTARG"
-				if [ "$?" == 0 ]; then usage; exit 2; fi
+				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				sFlag=true
 				valArg=$OPTARG
 				;;
 			S)
 				no_conjunction_with "$aFlag" "$sFlag"
-				if [ "$?" == 0 ]; then usage; exit 2; fi
+				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				is_percentage "$OPTARG"
-				if [ "$?" == 1 ]; then
+				if [ "$?" -eq 1 ]; then
 					PERCENT_MODE=true
 					OPTARG=`echo $OPTARG | cut -d % -f 1`
 				fi
 				is_positive_integer "$OPTARG"
-				if [ "$?" == 0 ]; then usage; exit 2; fi
+				if [ "$?" -eq 0 ]; then usage; exit 2; fi
 				SFlag=true
 				valArg=$OPTARG
 				;;
