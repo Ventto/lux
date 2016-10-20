@@ -6,22 +6,24 @@ Brightness's option values are positive integers.
 For percent mode: add '%' after value.
 
 Information:
-  -h:\t\t\tPrints this help and exits
-  -v:\t\t\tPrints version info and exists
-  (none):\t\tPrints controller's name and brightness info
-  \t\t\t\"{controller} {min;value;max}\"
+  -h:\t\tPrints this help and exits
+  -v:\t\tPrints version info and exists
+  (none):\tPrints controller's name and brightness info
+  \t\t\"{controller} {min;value;max}\"
 
 Brightness threshold options (can be used in conjunction):
-  -m:\t\t\tSet the brightness min
-  -M:\t\t\tSet the brightness max
+  -m:\t\tSet the brightness min
+  -M:\t\tSet the brightness max
 
 Brightness value options (can not be use in conjunction):
-  -a:\t\t\tAdd value
-  -s:\t\t\tSubtract value
-  -S:\t\t\tSet the brightness value
+  -a:\t\tAdd value
+  -s:\t\tSubtract value
+  -S:\t\tSet the brightness value
 
 Controller options (can be used with brightness options):
-  -c {controller}:\tSet the controller (/sys/class/backlight/{controller})\n"
+  -c:\t\tSet the controller '/sys/class/backlight/{controller}' (needs arg),
+  \t\totherwise a controller is automatically chosen (default)\n
+"
 }
 
 version() {
