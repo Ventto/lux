@@ -97,7 +97,7 @@ main() {
 				is_percentage "$OPTARG"
 				if [ "$?" -eq 1 ]; then
 					PERCENT_MODE=true
-					OPTARG=`echo $OPTARG | cut -d % -f 1`
+					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
 				is_positive_integer "$OPTARG"
 				if [ "$?" -eq 0 ]; then usage; exit 2; fi
@@ -110,7 +110,7 @@ main() {
 				is_percentage "$OPTARG"
 				if [ "$?" -eq 1 ]; then
 					PERCENT_MODE=true
-					OPTARG=`echo $OPTARG | cut -d % -f 1`
+					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
 				is_positive_integer "$OPTARG"
 				if [ "$?" -eq 0 ]; then usage; exit 2; fi
@@ -123,7 +123,7 @@ main() {
 				is_percentage "$OPTARG"
 				if [ "$?" -eq 1 ]; then
 					PERCENT_MODE=true
-					OPTARG=`echo $OPTARG | cut -d % -f 1`
+					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
 				is_positive_integer "$OPTARG"
 				if [ "$?" -eq 0 ]; then usage; exit 2; fi
