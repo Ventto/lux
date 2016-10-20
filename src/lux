@@ -66,16 +66,10 @@ is_percentage() {
 }
 
 check_controller() {
-	if ! [ "$#" -eq 1 ]; then return 0; fi
-
-	if ! [ -f "$1/max_brightness" ] ||
-		! [ -f "$1/brightness" ] ||
-		! [ -r "$1/max_brightness" ] ||
-		! [ -r "$1/brightness" ] ||
-		! [ -w "$1/brightness" ] ; then
-	return 0
+	if ! [ -f "$1/max_brightness" ] || ! [ -f "$1/brightness" ]; then
+		return 1
 	fi
-	return 1
+	return 0
 }
 
 main() {
@@ -108,9 +102,9 @@ main() {
 			c)
 				controller_path="/sys/class/backlight/$OPTARG"
 				check_controller $controller_path
-				if [ "$?" -eq 0 ]; then
+				if [ "$?" == 1 ]; then
 					echo "$controller_path: controller not found."
-					exit 1
+					exit 0
 				fi
 				cFlag=true
 				cArg=$controller_path
@@ -169,7 +163,7 @@ main() {
 		# Try to find the best-max-value controller
 		for i in `echo /sys/class/backlight/*` ; do
 			check_controller ${i}
-			[ "$?" -eq 0 ] && continue
+			[ "$?" -ne 0 ] && continue
 			max=`cat ${i}/max_brightness`
 			if (( "$best_max" < "$max" )) ; then
 				best_max=$max
