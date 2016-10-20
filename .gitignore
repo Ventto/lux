@@ -3,6 +3,7 @@
 !src/
 src/*
 !src/lux
+!src/99-lux.rules
 
 !README.md
 !LICENSE
