@@ -72,12 +72,12 @@ main() {
 			h) usage && exit 0;;
 			v) version && exit 0;;
 			m)
-				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int $OPTARG) == "0" ] && usage && exit 2
 				mFlag=true
 				mArg=$OPTARG
 				;;
 			M)
-				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int $OPTARG) == "0" ] && usage && exit 2
 				MFlag=true
 				MArg=$OPTARG
 				;;
@@ -92,31 +92,31 @@ main() {
 				;;
 			a)
 				[ $(no_conjunction $sFlag $SFlag) = "0" ] && usage && exit 2
-				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
+				if [ "$(is_percentage $OPTARG)" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
-				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int $OPTARG) == "0" ] && usage && exit 2
 				aFlag=true
 				valArg=$OPTARG
 				;;
 			s)
 				[ $(no_conjunction $aFlag $SFlag) = "0" ] && usage && exit 2
-				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
+				if [ "$(is_percentage $OPTARG)" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
-				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int $OPTARG) == "0" ] && usage && exit 2
 				sFlag=true
 				valArg=$OPTARG
 				;;
 			S)
 				[ $(no_conjunction $aFlag $sFlag) = "0" ] && usage && exit 2
-				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
+				if [ "$(is_percentage $OPTARG)" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
-				[ $(is_positive_int "$OPTARG") == "0" ] && usage && exit 2
+				[ $(is_positive_int $OPTARG) == "0" ] && usage && exit 2
 				SFlag=true
 				valArg=$OPTARG
 				;;
