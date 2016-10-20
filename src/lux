@@ -49,11 +49,11 @@ no_conjunction_with() {
 }
 
 is_positive_integer() {
-	[[ "$1" =~ ^[0-9]+$ ]] && return 1 || return 0
+	[[ "$1" =~ ^[0-9]+$ ]] && echo 1 || echo 0
 }
 
 is_percentage() {
-	[ -z "$(echo $1 | grep -e "%$")" ] && return 0 || return 1
+	[ -z "$(echo $1 | grep -e "%$")" ] && echo 0 || echo 1
 }
 
 main() {
@@ -72,14 +72,12 @@ main() {
 			h) usage && exit 0;;
 			v) version && exit 0;;
 			m)
-				is_positive_integer "$OPTARG"
-				if [ "$?" -eq 0 ]; then usage; exit 2; fi
+				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
 				mFlag=true
 				mArg=$OPTARG
 				;;
 			M)
-				is_positive_integer "$OPTARG"
-				if [ "$?" -eq 0 ]; then usage; exit 2; fi
+				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
 				MFlag=true
 				MArg=$OPTARG
 				;;
@@ -95,39 +93,33 @@ main() {
 			a)
 				no_conjunction_with "$sFlag" "$SFlag"
 				if [ "$?" -eq 0 ]; then usage; exit 2; fi
-				is_percentage "$OPTARG"
-				if [ "$?" -eq 1 ]; then
+				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
-				is_positive_integer "$OPTARG"
-				if [ "$?" -eq 0 ]; then usage; exit 2; fi
+				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
 				aFlag=true
 				valArg=$OPTARG
 				;;
 			s)
 				no_conjunction_with "$aFlag" "$SFlag"
 				if [ "$?" -eq 0 ]; then usage; exit 2; fi
-				is_percentage "$OPTARG"
-				if [ "$?" -eq 1 ]; then
+				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
-				is_positive_integer "$OPTARG"
-				if [ "$?" -eq 0 ]; then usage; exit 2; fi
+				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
 				sFlag=true
 				valArg=$OPTARG
 				;;
 			S)
 				no_conjunction_with "$aFlag" "$sFlag"
 				if [ "$?" -eq 0 ]; then usage; exit 2; fi
-				is_percentage "$OPTARG"
-				if [ "$?" -eq 1 ]; then
+				if [ "$(is_percentage "$OPTARG")" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
 				fi
-				is_positive_integer "$OPTARG"
-				if [ "$?" -eq 0 ]; then usage; exit 2; fi
+				[ $(is_positive_integer "$OPTARG") == "0" ] && usage && exit 2
 				SFlag=true
 				valArg=$OPTARG
 				;;
