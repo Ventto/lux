@@ -41,11 +41,11 @@ no_conjunction() {
 	done
 
 	if [ $# -eq 0 ]; then
-		return 1
+		echo 1
 	fi
 
 	echo "Operation arguments can not be used in conjunction."
-	return 0
+	echo 0
 }
 
 is_positive_int() {
