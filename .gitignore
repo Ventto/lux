@@ -2,7 +2,7 @@
 
 !src/
 src/*
-!src/lux
+!src/lux.sh
 !src/99-lux.rules
 
 !README.md
