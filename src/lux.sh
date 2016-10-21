@@ -60,25 +60,30 @@ check_udev_rules() {
 	fi
 	if [ ! $(ls -ld $BRIGHTNESS | awk '{print $4}') == "video" ]; then
 		echo "99-lux.rules: the udev rule was not triggered."
-		read -p "Do you wish to trigger it ?" yn
+		read -p "Do you wish to trigger it ? (y/n)" -n 1 yn && echo
 		case $yn in
 			[Yy]* ) sudo udevadm control -R && sudo udevadm trigger -c add;;
 			[Nn]* ) exit;;
 			* ) exit;;
 		esac
+		echo
 	fi
 }
 
 check_group_perm() {
 	if [ ! "$(id -nG "$USER" | grep -wo "video")" == "video" ]; then
 		echo -n "Unable to set brightness. "
-		echo "User '$USER' is not member of 'video' group."
-		read -p "Do you wish to add '$USER' to video ?" yn
+		echo "The current user '$USER' is not member of 'video' group."
+		read -p "Do you wish to add him in the group ? (y/n)" -n 1 yn && echo
 		case $yn in
-			[Yy]* ) sudo usermod -a -G video ${USER} && newgrp video;;
+			[Yy]* ) sudo usermod -a -G video ${USER} && \
+					echo "You are temporaly a member of 'video' in this shell."
+					echo "To make it permanent. You need to logout."
+					newgrp video;;
 			[Nn]* ) exit;;
 			* ) exit;;
 		esac
+		echo
 	else
 		[ ! -z $(getent group tom | grep -wo "video") ] && newgrp video
 	fi
