@@ -51,28 +51,44 @@ is_percentage() {
 	[ -z "$(echo $1 | grep -e "%$")" ] && echo 0 || echo 1
 }
 
-check_perm() {
-	local BRIGHTNESS="/sys/class/backlight/$1/brightness"
+check_udev_rules() {
+	local BRIGHTNESS="$1"
 	local UDEVRULE="/etc/udev/rules.d/99-lux.rules"
 	if [ ! -f "$UDEVRULE" ]; then
 		echo "$(basename($UDEVRULE)) is missing in $(dirname($UDEVRULE))"
 		exit 1
 	fi
+	if [ ! $(ls -ld $BRIGHTNESS | awk '{print $4}') == "video" ]; then
+		echo "99-lux.rules: the udev rule was not triggered."
+		read -p "Do you wish to trigger it ?" yn
+		case $yn in
+			[Yy]* ) sudo udevadm control -R && sudo udevadm trigger -c add;;
+			[Nn]* ) exit;;
+			* ) exit;;
+		esac
+	fi
+}
+
+check_group_perm() {
+	if [ ! "$(id -nG "$USER" | grep -wo "video")" == "video" ]; then
+		echo -n "Unable to set brightness. "
+		echo "User '$USER' is not member of 'video' group."
+		read -p "Do you wish to add '$USER' to video ?" yn
+		case $yn in
+			[Yy]* ) sudo usermod -a -G video ${USER} && newgrp video;;
+			[Nn]* ) exit;;
+			* ) exit;;
+		esac
+	else
+		[ ! -z $(getent group tom | grep -wo "video") ] && newgrp video
+	fi
+}
+
+check_perm() {
+	local BRIGHTNESS="/sys/class/backlight/$1/brightness"
 	if [ ! -w "$BRIGHTNESS" ]; then
-		if [ ! "$(id -nG "$USER" | grep -wo "video")" == "video" ]; then
-			echo "Unable to set brightness."
-			echo "User '$USER' must be in the 'video' group."
-			exit 0
-		else
-			[ ! -z $(getent group tom | grep -wo "video") ] && newgrp video
-			if [ ! $(ls -ld $BRIGHTNESS | awk '{print $4}') == "video" ]; then
-				echo "$UDEVRULE: was not triggered."
-				echo "Command-line tips:"
-				echo "$ sudo udevadm control --reload"
-				echo "$ sudo udevadm trigger --action=add"
-				exit 0
-			fi
-		fi
+		check_udev_rules $BRIGHTNESS
+		check_group_perm "()"
 	fi
 }
 
