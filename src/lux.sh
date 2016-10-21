@@ -52,21 +52,21 @@ is_percentage() {
 }
 
 check_perm() {
-	if [ ! -f "/etc/udev/rules.d/99-lux.rules" ]; then
-		echo "99-lux.rules is missing in /etc/udev/rules.d"
+	local BRIGHTNESS="/sys/class/backlight/$1/brightness"
+	local UDEVRULE="/etc/udev/rules.d/99-lux.rules"
+	if [ ! -f "$UDEVRULE" ]; then
+		echo "$(basename($UDEVRULE)) is missing in $(dirname($UDEVRULE))"
 		exit 1
 	fi
-	local FILEPATH="/sys/class/backlight/$1/brightness"
-
-	if [ ! -w "$FILEPATH" ]; then
+	if [ ! -w "$BRIGHTNESS" ]; then
 		if [ ! "$(id -nG "$USER" | grep -wo "video")" == "video" ]; then
 			echo "Unable to set brightness."
 			echo "User '$USER' must be in the 'video' group."
 			exit 0
 		else
 			[ ! -z $(getent group tom | grep -wo "video") ] && newgrp video
-			if [ ! $(ls -ld $FILEPATH | awk '{print $4}') == "video" ]; then
-				echo "/etc/udev/rules.d/99-lux.rules: was not triggered."
+			if [ ! $(ls -ld $BRIGHTNESS | awk '{print $4}') == "video" ]; then
+				echo "$UDEVRULE: was not triggered."
 				echo "Command-line tips:"
 				echo "$ sudo udevadm control --reload"
 				echo "$ sudo udevadm trigger --action=add"
