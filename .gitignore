@@ -1,9 +1,12 @@
 /*
 
+!rules.d/
+rules.d/*
+!rules.d/99-lux.rules
+
 !src/
 src/*
 !src/lux.sh
-!src/99-lux.rules
 
 !README.md
 !LICENSE
