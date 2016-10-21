@@ -51,6 +51,31 @@ is_percentage() {
 	[ -z "$(echo $1 | grep -e "%$")" ] && echo 0 || echo 1
 }
 
+check_perm() {
+	if [ ! -f "/etc/udev/rules.d/99-lux.rules" ]; then
+		echo "99-lux.rules is missing in /etc/udev/rules.d"
+		exit 1
+	fi
+	local FILEPATH="/sys/class/backlight/$1/brightness"
+
+	if [ ! -w "$FILEPATH" ]; then
+		if [ ! "$(id -nG "$USER" | grep -wo "video")" == "video" ]; then
+			echo "Unable to set brightness."
+			echo "User '$USER' must be in the 'video' group."
+			exit 0
+		else
+			[ ! -z $(getent group tom | grep -wo "video") ] && newgrp video
+			if [ ! $(ls -ld $FILEPATH | awk '{print $4}') == "video" ]; then
+				echo "/etc/udev/rules.d/99-lux.rules: was not triggered."
+				echo "Command-line tips:"
+				echo "$ sudo udevadm control --reload"
+				echo "$ sudo udevadm trigger --action=add"
+				exit 0
+			fi
+		fi
+	fi
+}
+
 main() {
 	local mFlag=false
 	local MFlag=false
@@ -77,6 +102,7 @@ main() {
 				MArg=$OPTARG
 				;;
 			c)
+				check_perm $OPTARG
 				local controller_path="/sys/class/backlight/$OPTARG"
 				if [ ! -d "$controller_path" ]; then
 					echo "$controller_path: controller not found."
@@ -138,6 +164,8 @@ main() {
 		done
 		[ -z "$best_controller"  ] && echo "There is no controller" && exit 0
 	fi
+
+	check_perm $(basename $best_controller)
 
 	local own_min=0
 	local own_max=$(( best_max-1 ))
