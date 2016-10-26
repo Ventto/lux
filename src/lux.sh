@@ -77,7 +77,8 @@ check_udev_rules() {
 		echo "99-lux.rules: the udev rules need to be triggered."
 		read -p "=> Do you wish to trigger it ? (y/n) " -n 1 yn && echo
 		case $yn in
-			[Yy]* ) sudo udevadm control -R && sudo udevadm trigger -c add;;
+			[Yy]* ) sudo udevadm control -R && \
+					sudo udevadm trigger -v -s backlight;;
 			[Nn]* ) exit;;
 			* )		exit;;
 		esac
