@@ -42,7 +42,7 @@ Controller options (can be used with brightness options):
 }
 
 version() {
-	echo -e "Lux 0.5 (beta)
+	echo -e "Lux 0.9
 Copyright (C) 2016 Thomas \"Ventto\" Venries.\n
 License GPLv3+: GNU GPL version 3 or later
 <http://gnu.org/licenses/gpl.html>.

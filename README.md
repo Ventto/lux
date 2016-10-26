@@ -2,7 +2,7 @@ Lux
 ===
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat)](https://github.com/Ventto/lux/blob/master/COPYING)
-[![Version](https://img.shields.io/badge/version-v0.7-blue.svg?style=flat)](https://github.com/Ventto/lux/releases)
+[![Version](https://img.shields.io/badge/version-v0.9-blue.svg?style=flat)](https://github.com/Ventto/lux/releases)
 [![Status](https://img.shields.io/badge/status-experimental-orange.svg?style=flat)](https://github.com/Ventto/lux/)
 [![Language (Bash)](https://img.shields.io/badge/powered_by-Bash-brightgreen.svg)](https://www.gnu.org/software/bash/)
 
@@ -18,20 +18,23 @@ Lux
 
 ## Installation
 
-Download the source:
+### Package Manager Utilities
+
+```
+$ yaourt -S lux (or)
+$ pacaur -S lux
+```
+
+### Manually
+
+* Download the sources:
 
 ```
 $ git clone https://github.com/Ventto/lux.git
 $ cd lux
 ```
 
-### Manually
-
-Normally, users are prohibited to alter files in the sys filesystem.
-It's advisable to setup an "udev" rule to allow users in the "video" group to
- set the display brightness.
-
-* To do so, copy the udev rules file in `/etc/udev/rules.d`:
+* Copy the udev rules file in `/etc/udev/rules.d`:
 
 ```
 $ sudo cp rules.d/99-lux.rules /etc/udev/rules.d
@@ -40,7 +43,7 @@ $ sudo cp rules.d/99-lux.rules /etc/udev/rules.d
 * Trigger the rules:
 
 ```
-$ sudo udevadm control -R && sudo udevadm trigger -c add
+$ sudo udevadm control -R && sudo udevadm trigger -c add -s backlight
 ```
 
 * Then add the user to the group:
@@ -54,6 +57,14 @@ $ sudo usermod -a -G video <user>
 
 ```
 $ newgrp video
+```
+
+* Run the script
+
+```
+$ cd src
+$ chmod +x lux.sh
+$ ./lux.sh
 ```
 
 ## Usage
