@@ -78,7 +78,7 @@ check_udev_rules() {
 		read -p "=> Do you wish to trigger it ? (y/n) " -n 1 yn && echo
 		case $yn in
 			[Yy]* ) sudo udevadm control -R && \
-					sudo udevadm trigger -v -s backlight;;
+					sudo udevadm trigger -c add -s backlight;;
 			[Nn]* ) exit;;
 			* )		exit;;
 		esac
