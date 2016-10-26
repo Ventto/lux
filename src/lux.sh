@@ -74,12 +74,12 @@ check_udev_rules() {
 		exit 1
 	fi
 	if [ ! $(ls -ld $BRIGHTNESS | awk '{print $4}') == "video" ]; then
-		echo "99-lux.rules: the udev rule was not triggered."
-		read -p "Do you wish to trigger it ? (y/n)" -n 1 yn && echo
+		echo "99-lux.rules: the udev rules need to be triggered."
+		read -p "=> Do you wish to trigger it ? (y/n) " -n 1 yn && echo
 		case $yn in
 			[Yy]* ) sudo udevadm control -R && sudo udevadm trigger -c add;;
 			[Nn]* ) exit;;
-			* ) exit;;
+			* )		exit;;
 		esac
 		echo
 	fi
@@ -89,14 +89,15 @@ check_group_perm() {
 	if [ ! "$(id -nG "$USER" | grep -wo "video")" == "video" ]; then
 		echo -n "Unable to set brightness. "
 		echo "The current user '$USER' is not member of 'video' group."
-		read -p "Do you wish to add him in the group ? (y/n)" -n 1 yn && echo
+		read -p "=> Do you wish to add him in the group ? (y/n) " -n 1 yn
 		case $yn in
 			[Yy]* ) sudo usermod -a -G video ${USER} && \
-					echo "You are temporaly a member of 'video' in this shell."
-					echo "To make it permanent. You need to logout."
+					echo -en "\n\nYou are temporarily a member of 'video' in "
+					echo -en "this shell.\nTo setup the relevant group "
+					echo "permissions, you need to log out and log in."
 					newgrp video;;
 			[Nn]* ) exit;;
-			* ) exit;;
+			* )		exit;;
 		esac
 		echo
 	else
@@ -125,20 +126,17 @@ main() {
 	OPTIND=1
 	while getopts "hvm:M:c:a:s:S:" opt; do
 		case $opt in
-			h) usage && exit 0;;
-			v) version && exit 0;;
-			m)
-				[ $(is_positive_int $OPTARG) == "0" ] && usage && exit 2
+			h)	usage	&& exit 0;;
+			v)	version	&& exit 0;;
+			m)	[ $(is_positive_int $OPTARG) == "0" ] && usage && exit 2
 				mFlag=true
 				mArg=$OPTARG
 				;;
-			M)
-				[ $(is_positive_int $OPTARG) == "0" ] && usage && exit 2
+			M)	[ $(is_positive_int $OPTARG) == "0" ] && usage && exit 2
 				MFlag=true
 				MArg=$OPTARG
 				;;
-			c)
-				check_perm $OPTARG
+			c)	check_perm $OPTARG
 				local controller_path="/sys/class/backlight/$OPTARG"
 				if [ ! -d "$controller_path" ]; then
 					echo "$controller_path: controller not found."
@@ -147,8 +145,7 @@ main() {
 				cFlag=true
 				cArg=$controller_path
 				;;
-			a)
-				[ $(no_conjunction $sFlag $SFlag) != "1" ] && usage && exit 2
+			a)	[ $(no_conjunction $sFlag $SFlag) != "1" ] && usage && exit 2
 				if [ "$(is_percentage $OPTARG)" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
@@ -157,8 +154,7 @@ main() {
 				aFlag=true
 				valArg=$OPTARG
 				;;
-			s)
-				[ $(no_conjunction $aFlag $SFlag) != "1" ] && usage && exit 2
+			s)	[ $(no_conjunction $aFlag $SFlag) != "1" ] && usage && exit 2
 				if [ "$(is_percentage $OPTARG)" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
@@ -167,8 +163,7 @@ main() {
 				sFlag=true
 				valArg=$OPTARG
 				;;
-			S)
-				[ $(no_conjunction $aFlag $sFlag) != "1" ] && usage && exit 2
+			S)	[ $(no_conjunction $aFlag $sFlag) != "1" ] && usage && exit 2
 				if [ "$(is_percentage $OPTARG)" == "1" ]; then
 					percent_mode=true
 					OPTARG=$(echo $OPTARG | cut -d % -f 1)
@@ -177,8 +172,8 @@ main() {
 				SFlag=true
 				valArg=$OPTARG
 				;;
-			\?) exit 2 ;;
-			:) exit 2 ;;
+			\?)	exit 2 ;;
+			:)	exit 2 ;;
 		esac
 	done
 
@@ -198,7 +193,9 @@ main() {
 				best_controller=${i}
 			fi
 		done
-		[ -z "$best_controller"  ] && echo "There is no controller" && exit 0
+		if [ -z "$best_controller"  ]; then
+			echo "No backlight controller detected" && exit 0
+		fi
 	fi
 
 	check_perm $(basename $best_controller)
@@ -209,8 +206,7 @@ main() {
 	local brightness=$(cat $file)
 
 	if [ "$#" -eq 0 ]; then
-		echo "$best_controller $own_min;$brightness;$own_max"
-		exit 0
+		echo "$best_controller $own_min;$brightness;$own_max"; exit 0
 	elif [ $# -eq 2 ] && [ "$cFlag" = true ]; then
 		usage; exit 0
 	fi
