@@ -191,7 +191,7 @@ main() {
 	# Try to find the best-max-value controller
 	else
 		for i in $(echo /sys/class/backlight/*) ; do
-			[ "${i: -1}" == "*"  ] && continue
+			[ "${i: -1}" == "*"  ] && break
 			max=$(cat ${i}/max_brightness)
 			if (( "$best_max" < "$max" )) ; then
 				best_max=$max
