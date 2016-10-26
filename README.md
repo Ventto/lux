@@ -1,37 +1,46 @@
 Lux
 ===
 
-*Lux is a simple shell script (currently a first draft) to control
-backlight on GNU/Linux. It aims to have the same features than
-[Light](https://github.com/haikarainen/light) and a bit more to offset the tiny
-lack of configuration.*
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat)](https://github.com/Ventto/lux/blob/master/COPYING)
+[![Version](https://img.shields.io/badge/version-v0.7-blue.svg?style=flat)](https://github.com/Ventto/lux/releases)
+[![Status](https://img.shields.io/badge/status-experimental-orange.svg?style=flat)](https://github.com/Ventto/lux/)
+[![Language (Bash)](https://img.shields.io/badge/powered_by-Bash-brightgreen.svg)](https://www.gnu.org/software/bash/)
+
+*Lux is a simple Bash script to easily control brightness on backlight-controllers.*
 
 ## Features
 
-* Set a minimum brightness value, to make the screen plunges into total darkness.
-It happens sometimes from a certain value, if you decrease the brightness until
-before 0 the result is the same. So ergonomicly that value could be the minimum.
+*  Mark out the brightness value by a min & max value. That can avoid making the screen plunges into total darkness. It happens sometimes if you set the brightness 0 or 100. So we should set the maximum 99 or/and minimum 1. Moreover that could be useful if between 1 and 20, the brightness seems to be the same for eyes (set the minimum 20).
 
-* Set a maximum brightness value, as some controllers, the max value is 100 but
-when 100 is achieved the screen is pitch black. So the friendly max is 99.
-That's why by default after reboot the brightness is set 99 automatically.
-For the sake of ergonomy, when we keep pressing the shortcut to increase
-the brightness like nerotic, we expect well lit screen. Moreover for some
-dazzling backlightings, the last 5% or 10% could be useless.
-
-* Set a targeted controller
+* Set another backlight controller manually
 
 * Figure out the best max-brightness-value controller without setting one.
 
 ## Installation
 
-Normally, users are prohibited to alter files in the sys filesystem. It's advisable to setup an "udev" rule to allow users in the "video" group to set the display brightness.
-
-* To do so, place a file in /etc/udev/rules.d/90-backlight.rules containing:
+Download the source:
 
 ```
-SUBSYSTEM=="backlight", ACTION=="add", RUN+="/bin/chgrp video /sys/class/backlight/%k/brightness"
-SUBSYSTEM=="backlight", ACTION=="add", RUN+="/bin/chmod g+w /sys/class/backlight/%k/brightness"
+$ git clone https://github.com/Ventto/lux.git
+$ cd lux
+```
+
+### Manually
+
+Normally, users are prohibited to alter files in the sys filesystem.
+It's advisable to setup an "udev" rule to allow users in the "video" group to
+ set the display brightness.
+
+* To do so, copy the udev rules file in `/etc/udev/rules.d`:
+
+```
+$ sudo cp rules.d/99-lux.rules /etc/udev/rules.d
+```
+
+* Trigger the rules:
+
+```
+$ sudo udevadm control -R && sudo udevadm trigger -c add
 ```
 
 * Then add the user to the group:
@@ -40,77 +49,96 @@ SUBSYSTEM=="backlight", ACTION=="add", RUN+="/bin/chmod g+w /sys/class/backlight
 $ sudo usermod -a -G video <user>
 ```
 
-* To setup the relevant permissions at boot time.
+* To setup the relevant group permissions, you need to logout/login.
+  Otherwise you could directly get these permissions in a shell:
+
+```
+$ newgrp video
+```
 
 ## Usage
-<code> lux [OPTION]... </code>
+
+```
+lux [OPTION]...
+```
+
 Brightness's option values are positive integers.
 
 For percent mode: add '%' after values. Percent mode can only be used with
 brightness value options.
 
 #### Information:
+
 * blank:	Prints controller's name and brightness info;
   Pattern: {controller} {min;value;max}
-* -h:		Prints this help and exits
-* -v:		Prints version info and exists
+* -h:	 Prints this help and exits
+* -v:	 Prints version info and exists
 
 #### Brightness threshold options (can be used in conjunction):
-* -m:		Set the brightness min
-* -M:		Set the brightness max
+
+* -m: Set the brightness min
+* -M: Set the brightness max
 
 #### Brightness value options (can not be use in conjunction):
-* -a:		Add value
-* -s:		Subtract value
-* -S:		Set the brightness value
+
+* -a:	 Add value
+* -s:	 Subtract value
+* -S: Set the brightness value
 
 #### Controller options (can be used with brightness options):
-* -c:		Set the controller to use (needs argument). <br />
-  Use any controller name in /sys/class/backlight/ as argument.<br/>
-  Otherwise a controller is automatically chosen (default)
+
+* -c:		Set the controller to use (needs argument). Use any controller name in /sys/class/backlight/ as argument. Otherwise a controller is automatically chosen (default)
 
 ## Examples
+
+* No option
 ```
 $ lux
-/sys/class/backlight/nv_backlight: 0;43;99
+/sys/class/backlight/nv_backlight 0;43;99
+```
 
-$ lux -S 35
+* Set a value (useful for pitchblack-shortcut)
+```
+$ lux -S 0
+```
+
+* Increase the current of 15%
+```
 $ lux -a 15%
-$ lux -s 30
+```
 
+* Set the minimum 30, the maximum 99 and increase the current value of 10
+
+```
 $ lux -m 30 -M 99 -a 10
-$ lux -m 10 -M 80 -S 50%
+```
 
-$ lux -c /sys/class/backlight/nv_backlight -s 10
+* Set the backlight controller and set the brightness value of 50
+```
+$ lux -c /sys/class/backlight/nv_backlight -S 50
 ```
 
 ## FAQ
-Anwsers are only written to inspire you. They do not reflect your own configuration.
 
-### Set the brightness value at startx ?
-`echo "lux -S {row value|percent value}" > $HOME/.xinitrc`
+### From 0 to 20, there is no difference.
 
-### From 0 to 20, there is no difference. A lead ?
-Sometimes, it happens. Lux was partially written to troubleshoot it.<br>
-Set the minimum with 20.<br>
-`lux [-a|-s|-S] {row value|percent value} -m 20`
+Sometimes, it happens. You could set the minimum 20.<br>
+
+```
+lux -m 20 [OPTION]...
+```
 
 ### Pitchblack at 100 ?
+
 Set the maximum with 99.<br>
-`lux [-a|-s|-S] {row value|percent value} -M 99`
 
-
-## TODO
-
-* Automatically figure out the functional controller
-* Less intrusive method to edit the write-protected *brightness* file
-* Add -G option to display adapted brightness percentage according to min/max settings
-Example:
 ```
-$ lux
-/sys/class/backlight/nv_backlight: 0;43;99   <-- output: row values from ./nv_backlight/
-
-$ lux -m 10 -M 80 -G   <-- gap=80-10=70, current=43, 43*70/100~=30%
-30%                          <-- output: percent value (<> row value)
+lux -M 99 [OPTION]...
 ```
-* Keep the last brightness value after rebooting
+
+### Set the brightness value after initializing an X session ?
+
+```
+echo "lux -S 10" >> $HOME/.xinitrc
+```
+
