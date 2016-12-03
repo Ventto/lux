@@ -14,7 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Lux.  If not, see <http://www.gnu.org/licenses/>.
-
 usage() {
 	echo -e "Usage: lux [OPTION]...
 Brightness's option values are positive integers.\n
@@ -66,51 +65,26 @@ is_percentage() {
 	[ -z "$(echo $1 | grep -e "%$")" ] && echo 0 || echo 1
 }
 
-check_udev_rules() {
-	local BRIGHTNESS="$1"
-	local UDEVRULE="/etc/udev/rules.d/99-lux.rules"
-	if [ ! -f "$UDEVRULE" ]; then
-		echo "$(basename($UDEVRULE)) is missing in $(dirname($UDEVRULE))"
-		exit 1
-	fi
-	if [ ! $(ls -ld $BRIGHTNESS | awk '{print $4}') == "video" ]; then
-		echo "99-lux.rules: the udev rules need to be triggered."
-		read -p "=> Do you wish to trigger it ? (y/n) " -n 1 yn && echo
-		case $yn in
-			[Yy]* ) sudo udevadm control -R && \
-					sudo udevadm trigger -c add -s backlight;;
-			[Nn]* ) exit;;
-			* )		exit;;
-		esac
-		echo
-	fi
-}
-
-check_group_perm() {
-	if [ ! "$(id -nG "$USER" | grep -wo "video")" == "video" ]; then
-		echo -n "Unable to set brightness. "
-		echo "The current user '$USER' is not member of 'video' group."
-		read -p "=> Do you wish to add him in the group ? (y/n) " -n 1 yn
-		case $yn in
-			[Yy]* ) sudo usermod -a -G video ${USER} && \
-					echo -en "\n\nYou are temporarily a member of 'video' in "
-					echo -en "this shell.\nTo setup the relevant group "
-					echo "permissions, you need to log out and log in."
-					newgrp video;;
-			[Nn]* ) exit;;
-			* )		exit;;
-		esac
-		echo
-	else
-		[ ! -z $(getent group tom | grep -wo "video") ] && newgrp video
-	fi
-}
-
 check_perm() {
-	local BRIGHTNESS="/sys/class/backlight/$1/brightness"
-	if [ ! -w "$BRIGHTNESS" ]; then
-		check_udev_rules $BRIGHTNESS
-		check_group_perm "()"
+	local _brightness_file=$1
+	local udev_rule="/etc/udev/rules.d/99-lux.rules"
+
+	if [ ! -w "${_brightness_file}" ]; then
+		if [ ! -f "${udev_rule}" ]; then
+			echo "${udev_rule} is missing."
+			exit 1
+		fi
+		if [ ! $(ls -ld ${_brightness_file} | awk '{print $4}') == "video" ]; then
+			sudo udevadm control -R && \
+			sudo udevadm trigger -c add -s backlight
+		fi
+		if [ ! "$(id -nG "${USER}" | grep -wo "video")" == "video" ]; then
+			sudo usermod -a -G video ${USER}
+		fi
+		echo "To run it without sudo, you need to logout/login."
+		echo 1
+	else
+		echo 0
 	fi
 }
 
@@ -137,8 +111,7 @@ main() {
 				MFlag=true
 				MArg=$OPTARG
 				;;
-			c)	check_perm $OPTARG
-				local controller_path="/sys/class/backlight/$OPTARG"
+			c)	local controller_path="/sys/class/backlight/$OPTARG"
 				if [ ! -d "$controller_path" ]; then
 					echo "$controller_path: controller not found."
 					exit 0
@@ -199,11 +172,12 @@ main() {
 		fi
 	fi
 
-	check_perm $(basename $best_controller)
+	local file="$best_controller/brightness"
+
+	check_perm ${file}
 
 	local own_min=0
 	local own_max=$(( best_max-1 ))
-	local file="$best_controller/brightness"
 	local brightness=$(cat $file)
 
 	if [ "$#" -eq 0 ]; then
