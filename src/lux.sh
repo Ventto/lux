@@ -75,7 +75,6 @@ check_perm() {
 			exit 1
 		fi
 		if [ ! $(ls -ld ${_brightness_file} | awk '{print $4}') == "video" ]; then
-			sudo udevadm control -R && \
 			sudo udevadm trigger -c add -s backlight
 		fi
 		if [ ! "$(id -nG "${USER}" | grep -wo "video")" == "video" ]; then
