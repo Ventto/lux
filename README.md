@@ -2,7 +2,7 @@ Lux
 ===
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat)](https://github.com/Ventto/lux/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-v1.0b-blue.svg?style=flat)](https://github.com/Ventto/lux/releases)
+[![Version](https://img.shields.io/badge/version-v1.0-blue.svg?style=flat)](https://github.com/Ventto/lux/releases)
 [![Language (Bash)](https://img.shields.io/badge/powered_by-Bash-brightgreen.svg)](https://www.gnu.org/software/bash/)
 
 *Lux is a simple Bash script to easily control brightness on backlight-controllers.*
@@ -84,25 +84,25 @@ brightness value options.
 
 #### Information:
 
-* blank:	Prints controller's name and brightness info;
+* blank: Prints controller's name and brightness info;
   Pattern: {controller} {min;value;max}
-* -h:	 Prints this help and exits
-* -v:	 Prints version info and exists
+* -h: Prints this help and exits
+* -v: Prints version info and exists
 
-#### Brightness threshold options (can be used in conjunction):
+#### Thresholds (can be used in conjunction):
 
-* -m: Set the brightness min
-* -M: Set the brightness max
+* -m: Set the brightness min (natural integer, min < max)
+* -M: Set the brightness max (natural integer, max < min)
 
-#### Brightness value options (can not be use in conjunction):
+#### Operations:
 
-* -a:	 Add value
-* -s:	 Subtract value
-* -S: Set the brightness value
+* -a: Add value
+* -s: Subtract value
+* -S: Set the brightness value (set thresholds will be ignored)
 
-#### Controller options (can be used with brightness options):
+#### Controllers:
+* -c: Set the controller to use (needs argument). Use any controller name in /sys/class/backlight/ as argument. Otherwise a controller is automatically chosen (default)
 
-* -c:		Set the controller to use (needs argument). Use any controller name in /sys/class/backlight/ as argument. Otherwise a controller is automatically chosen (default)
 
 ## Examples
 
