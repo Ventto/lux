@@ -1,9 +1,8 @@
 Lux
 ===
 
-[![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat)](https://github.com/Ventto/lux/blob/master/COPYING)
-[![Version](https://img.shields.io/badge/version-v0.9-blue.svg?style=flat)](https://github.com/Ventto/lux/releases)
-[![Status](https://img.shields.io/badge/status-experimental-orange.svg?style=flat)](https://github.com/Ventto/lux/)
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat)](https://github.com/Ventto/lux/blob/master/LICENSE)
+[![Version](https://img.shields.io/badge/version-v1.0b-blue.svg?style=flat)](https://github.com/Ventto/lux/releases)
 [![Language (Bash)](https://img.shields.io/badge/powered_by-Bash-brightgreen.svg)](https://www.gnu.org/software/bash/)
 
 *Lux is a simple Bash script to easily control brightness on backlight-controllers.*
@@ -21,50 +20,55 @@ Lux
 ### Package Manager Utilities
 
 ```
-$ yaourt -S lux (or)
-$ pacaur -S lux
+$ yaourt -S lux
 ```
 
 ### Manually
 
-* Download the sources:
+* Clone the repo:
 
 ```
 $ git clone https://github.com/Ventto/lux.git
 $ cd lux
 ```
 
-* Copy the udev rules file in `/etc/udev/rules.d`:
+* Import the udev rule:
 
 ```
 $ sudo cp rules.d/99-lux.rules /etc/udev/rules.d
 ```
 
-* Trigger the rules:
+* Reload udev's rules and trigger the lux's rule:
 
 ```
 $ sudo udevadm control -R && sudo udevadm trigger -c add -s backlight
 ```
 
-* Then add the user to the group:
+* Make the script executable:
+
+```
+$ cd src
+$ chmod +x lux.sh
+```
+
+* Then add a given user to the group *video*:
 
 ```
 $ sudo usermod -a -G video <user>
 ```
 
-* To setup the relevant group permissions, you need to logout/login.
-  Otherwise you could directly get these permissions in a shell:
+* **To setup the relevant group permissions permanently, you need to logout/login.**<br />
+  Otherwise if you are in a hurry, you can directly get these permissions properly in a new shell:
 
 ```
 $ newgrp video
-```
-
-* Run the script
-
-```
-$ cd src
-$ chmod +x lux.sh
 $ ./lux.sh
+```
+
+* Or run the script with *sudo*:
+
+```
+$ sudo ./lux.sh
 ```
 
 ## Usage
