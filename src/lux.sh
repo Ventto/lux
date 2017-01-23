@@ -41,7 +41,7 @@ Controllers:
 }
 
 version() {
-    echo -e "Lux 1.0b
+    echo -e "Lux 1.0
 Copyright (C) 2016 Thomas \"Ventto\" Venries.\n
 License GPLv3+: GNU GPL version 3 or later
 <http://gnu.org/licenses/gpl.html>.
@@ -64,7 +64,7 @@ is_positive_int() {
 }
 
 is_percentage() {
-    echo ${1} | grep "%$" > /dev/null && echo 1 || echo 0
+    echo "${1}" | grep "%$" > /dev/null && echo 1 || echo 0
 }
 
 check_perm() {
@@ -73,7 +73,7 @@ check_perm() {
 
     if [ ! -w "${_brightness}" ] ; then
         if [ "$(id -u)" != "0" ]; then
-            if ! id -nG ${USER} | grep video > /dev/null ; then
+            if ! id -nG "${USER}" | grep video > /dev/null ; then
                 echo "Use sudo once to setup group permissions,"
                 echo "to access to controller's brightness from user."
             else
@@ -89,7 +89,7 @@ check_perm() {
             exit 1
         fi
 
-        if ! ls -l ${_brightness} | grep video > /dev/null ; then
+        if ! ls -l "${_brightness}" | grep video > /dev/null ; then
             if [ ! -f "${udev_rule}" ] ; then
                 echo "${udev_rule}: missing file."
                 exit 1
@@ -98,9 +98,9 @@ check_perm() {
             udevadm trigger -c add -s backlight
         fi
 
-        if ! id -nG ${SUDO_USER} | grep video > /dev/null ; then
-            usermod -a -G video ${SUDO_USER}
-            echo "User has been added to ~video~ group.\n"
+        if ! id -nG "${SUDO_USER}" | grep video > /dev/null ; then
+            usermod -a -G video "${SUDO_USER}"
+            echo "User has been added to ~video~ group."
             echo "To setup the group permissions permanently, you need to logout/login."
             exit 0
         fi
@@ -121,11 +121,11 @@ main() {
         case $opt in
             h)  usage   && exit 0 ;;
             v)  version && exit 0 ;;
-            m)  [ "$(is_positive_int $OPTARG)" == 0 ] && arg_err
+            m)  [ "$(is_positive_int "$OPTARG")" == 0 ] && arg_err
                 mFlag=true
                 mArg=$OPTARG
                 ;;
-            M)  [ "$(is_positive_int $OPTARG)" == 0 ] && arg_err
+            M)  [ "$(is_positive_int "$OPTARG")" == 0 ] && arg_err
                 MFlag=true
                 MArg=$OPTARG
                 ;;
@@ -138,29 +138,29 @@ main() {
                 cArg="${controller_path}"
                 ;;
             a)  [ "$(no_conjunction ${sFlag} ${SFlag})" != 0 ] && arg_err
-                if [ "$(is_percentage $OPTARG)" == 1 ] ; then
+                if [ "$(is_percentage "$OPTARG")" == 1 ] ; then
                     percent_mode=true
-                    OPTARG=$(echo $OPTARG | cut -d % -f 1)
+                    OPTARG=$(echo "$OPTARG" | cut -d % -f 1)
                 fi
-                [ "$(is_positive_int $OPTARG)" == 0 ] && arg_err
+                [ "$(is_positive_int "$OPTARG")" == 0 ] && arg_err
                 aFlag=true
                 valArg=$OPTARG
                 ;;
-            s)  [ "$(no_conjunction ${aFlag} ${SFlag})" != 0 ] && arg_err
-                if [ "$(is_percentage $OPTARG)" == 1 ] ; then
+            s)  [ "$(no_conjunction "${aFlag}" "${SFlag}")" != 0 ] && arg_err
+                if [ "$(is_percentage "$OPTARG")" == 1 ] ; then
                     percent_mode=true
-                    OPTARG=$(echo $OPTARG | cut -d % -f 1)
+                    OPTARG=$(echo "$OPTARG" | cut -d % -f 1)
                 fi
-                [ "$(is_positive_int $OPTARG)" == 0 ] && arg_err
+                [ "$(is_positive_int "$OPTARG")" == 0 ] && arg_err
                 sFlag=true
                 valArg=$OPTARG
                 ;;
-            S)  [ "$(no_conjunction ${aFlag} ${sFlag})" != 0 ] && arg_err
-                if [ "$(is_percentage $OPTARG)" == 1 ] ; then
+            S)  [ "$(no_conjunction "${aFlag}" "${sFlag}")" != 0 ] && arg_err
+                if [ "$(is_percentage "$OPTARG")" == 1 ] ; then
                     percent_mode=true
-                    OPTARG=$(echo $OPTARG | cut -d % -f 1)
+                    OPTARG=$(echo "$OPTARG" | cut -d % -f 1)
                 fi
-                [ "$(is_positive_int $OPTARG)" == 0 ] && arg_err
+                [ "$(is_positive_int "$OPTARG")" == 0 ] && arg_err
                 SFlag=true
                 valArg=$OPTARG
                 ;;
@@ -177,12 +177,12 @@ main() {
             arg_err
         fi
         best_controller=${cArg}
-        best_max=$(cat ${best_controller}/max_brightness)
+        best_max=$(cat "${best_controller}/max_brightness")
     # Try to find the best-max-value controller
     else
         for i in $(echo /sys/class/backlight/*) ; do
             [ "${i:-1}" == "*" ] && break
-            max=$(cat ${i}/max_brightness)
+            max=$(cat "${i}/max_brightness")
             if (( "${best_max}" < "${max}" )) ; then
                 best_max=${max}
                 best_controller=${i}
@@ -196,9 +196,9 @@ main() {
 
     local file="${best_controller}/brightness"
 
-    check_perm ${file}
+    check_perm "${file}"
 
-    local brightness=$(cat ${file})
+    brightness=$(cat "${file}")
     best_max=$(( best_max - 1 ))
 
     # Needs to display the choosen controler
@@ -211,7 +211,7 @@ main() {
         ${percent_mode} && valArg=$(( best_max * valArg / 100 ))
         [ "$valArg" -lt 0 ] && valArg=0
         [ "$valArg" -gt "$best_max" ] && valArg=${best_max}
-        echo ${valArg} | /usr/bin/tee ${file}
+        echo "${valArg}" | /usr/bin/tee "${file}"
         shift "$((OPTIND - 1))"
         exit 0
     fi
@@ -232,11 +232,11 @@ main() {
     if ${aFlag} ; then
         value=$(( brightness + valArg ))
         [ "$value" -gt "$own_max" ] && value=${own_max}
-        echo ${value} | /usr/bin/tee ${file}
+        echo "${value}" | /usr/bin/tee "${file}"
     elif ${sFlag} ; then
         value=$(( brightness - valArg ))
         [ "$value" -lt "$own_min" ] && value=${own_min}
-        echo ${value} | /usr/bin/tee ${file}
+        echo "${value}" | /usr/bin/tee "${file}"
     else
         arg_err
     fi
