@@ -8,6 +8,7 @@ rules.d/*
 src/*
 !src/lux.sh
 
-!README.md
+!CONTRIBUTING.md
 !LICENSE
+!README.md
 !.gitignore
