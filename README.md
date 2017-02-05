@@ -2,7 +2,6 @@ Lux
 ===
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat)](https://github.com/Ventto/lux/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-v1.0-blue.svg?style=flat)](https://github.com/Ventto/lux/releases)
 [![Language (Bash)](https://img.shields.io/badge/powered_by-Bash-brightgreen.svg)](https://www.gnu.org/software/bash/)
 
 *Lux is a simple Bash script to easily control brightness on backlight-controllers.*
