@@ -116,7 +116,6 @@ main() {
     local SFlag=false
     local percent_mode=false
 
-    OPTIND=1
     while getopts "hvm:M:c:a:s:S:" opt; do
         case $opt in
             h)  usage   ; exit ;;
@@ -134,6 +133,7 @@ main() {
                     echo "${controller_path}: controller not found."
                     exit
                 fi
+                [ "$#" -eq 2 ] && arg_err
                 cFlag=true
                 cArg="${controller_path}"
                 ;;
@@ -169,11 +169,12 @@ main() {
         esac
     done
 
+    shift "$((OPTIND - 1))"
+
     local best_controller
     local best_max=-1
 
     if ${cFlag} ; then
-        [ "$#" -eq 2 ] && arg_err
         best_controller=${cArg}
         best_max=$(cat "${best_controller}/max_brightness")
     # Try to find the best-max-value controller
@@ -210,7 +211,6 @@ main() {
         [ "$valArg" -lt 0 ] && valArg=0
         [ "$valArg" -gt "$best_max" ] && valArg=${best_max}
         echo "${valArg}" | /usr/bin/tee "${file}"
-        shift "$((OPTIND - 1))"
         exit
     fi
 
@@ -238,8 +238,6 @@ main() {
     else
         arg_err
     fi
-
-    shift "$((OPTIND - 1))"
 }
 
 main "$@"
