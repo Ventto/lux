@@ -56,7 +56,7 @@ no_conjunction() {
 }
 
 arg_err() {
-    usage && exit 2
+    usage ; exit 2
 }
 
 is_positive_int() {
@@ -79,7 +79,7 @@ check_perm() {
             else
                 echo "To setup the group permissions permanently, you need to logout/login."
             fi
-            exit 0
+            exit
         fi
     fi
 
@@ -102,7 +102,7 @@ check_perm() {
             usermod -a -G video "${SUDO_USER}"
             echo "User has been added to ~video~ group."
             echo "To setup the group permissions permanently, you need to logout/login."
-            exit 0
+            exit
         fi
     fi
 }
@@ -119,8 +119,8 @@ main() {
     OPTIND=1
     while getopts "hvm:M:c:a:s:S:" opt; do
         case $opt in
-            h)  usage   && exit 0 ;;
-            v)  version && exit 0 ;;
+            h)  usage   ; exit ;;
+            v)  version ; exit ;;
             m)  [ "$(is_positive_int "$OPTARG")" == 0 ] && arg_err
                 mFlag=true
                 mArg=$OPTARG
@@ -132,7 +132,7 @@ main() {
             c)  local controller_path="/sys/class/backlight/$OPTARG"
                 if [ ! -d "${controller_path}" ] ; then
                     echo "${controller_path}: controller not found."
-                    exit 0
+                    exit
                 fi
                 cFlag=true
                 cArg="${controller_path}"
@@ -164,18 +164,16 @@ main() {
                 SFlag=true
                 valArg=$OPTARG
                 ;;
-            \?) exit 2 ;;
-            :)  exit 2 ;;
+            \?) usage ; exit 2 ;;
+            :)  usage ; exit 2 ;;
         esac
     done
 
-    local best_controller=""
+    local best_controller
     local best_max=-1
 
     if ${cFlag} ; then
-        if [ "$#" -eq 2 ] ; then
-            arg_err
-        fi
+        [ "$#" -eq 2 ] && arg_err
         best_controller=${cArg}
         best_max=$(cat "${best_controller}/max_brightness")
     # Try to find the best-max-value controller
@@ -190,7 +188,7 @@ main() {
         done
         if [ -z "${best_controller}" ]; then
             echo "No backlight controller detected"
-            exit 0
+            exit
         fi
     fi
 
@@ -204,7 +202,7 @@ main() {
     # Needs to display the choosen controler
     if [ "$#" -eq 0 ] ; then
         echo "${best_controller} 0;${brightness};${best_max}"
-        exit 0
+        exit
     fi
 
     if ${SFlag} ; then
@@ -213,7 +211,7 @@ main() {
         [ "$valArg" -gt "$best_max" ] && valArg=${best_max}
         echo "${valArg}" | /usr/bin/tee "${file}"
         shift "$((OPTIND - 1))"
-        exit 0
+        exit
     fi
 
     ${mFlag} && own_min=${mArg} || own_min=0
