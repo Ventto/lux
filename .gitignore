@@ -9,6 +9,7 @@ src/*
 !src/lux.sh
 
 !CONTRIBUTING.md
+!Makefile
 !LICENSE
 !README.md
 !.gitignore
