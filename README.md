@@ -2,9 +2,8 @@ Lux
 ===
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat)](https://github.com/Ventto/lux/blob/master/LICENSE)
-[![Language (Bash)](https://img.shields.io/badge/powered_by-Bash-brightgreen.svg)](https://www.gnu.org/software/bash/)
 
-*Lux is a simple Bash script to easily control brightness on backlight-controllers.*
+*Lux is POSIX-compliant Shell script to easily control brightness on backlight-controllers.*
 
 ## Features
 
@@ -24,50 +23,25 @@ $ yaourt -S lux
 
 ### Manually
 
-* Clone the repo:
+* Install *lux*:
 
 ```
 $ git clone https://github.com/Ventto/lux.git
 $ cd lux
+$ sudo make install
 ```
 
-* Import the udev rule:
+* To setup the relevant group permissions permanently, you need to run *lux*
+with sudo and then logout/login.
 
 ```
-$ sudo cp rules.d/99-lux.rules /etc/udev/rules.d
+$ sudo lux
 ```
 
-* Reload udev's rules and trigger the lux's rule:
-
-```
-$ sudo udevadm control -R && sudo udevadm trigger -c add -s backlight
-```
-
-* Make the script executable:
-
-```
-$ cd src
-$ chmod +x lux.sh
-```
-
-* Then add a given user to the group *video*:
-
-```
-$ sudo usermod -a -G video <user>
-```
-
-* **To setup the relevant group permissions permanently, you need to logout/login.**<br />
-  Otherwise if you are in a hurry, you can directly get these permissions properly in a new shell:
+If you are in a hurry, you can directly get these permissions properly in a new shell:
 
 ```
 $ newgrp video
-$ ./lux.sh
-```
-
-* Or run the script with *sudo*:
-
-```
-$ sudo ./lux.sh
 ```
 
 ## Usage
@@ -77,23 +51,22 @@ lux [OPTION]...
 ```
 
 Brightness's option values are positive integers.
+Percent mode: add '%' after values (operation options only).
 
-For percent mode: add '%' after values. Percent mode can only be used with
-brightness value options.
+Without option, it prints controller name and brightness info:
+{controller} {min;value;max}
 
 #### Information:
 
-* blank: Prints controller's name and brightness info;
-  Pattern: {controller} {min;value;max}
 * -h: Prints this help and exits
 * -v: Prints version info and exists
 
-#### Thresholds (can be used in conjunction):
+#### Thresholds (raw values, can be used in conjunction):
 
 * -m: Set the brightness min (natural integer, min < max)
 * -M: Set the brightness max (natural integer, max < min)
 
-#### Operations:
+#### Operations (with percent mode):
 
 * -a: Add value
 * -s: Subtract value
