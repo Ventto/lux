@@ -3,7 +3,7 @@ Lux
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat)](https://github.com/Ventto/lux/blob/master/LICENSE)
 
-*Lux is POSIX-compliant Shell script to easily control brightness on backlight-controllers.*
+*Lux is a POSIX-compliant Shell script to easily control brightness on backlight-controllers.*
 
 ## Features
 
@@ -31,14 +31,10 @@ $ cd lux
 $ sudo make install
 ```
 
-* To setup the relevant group permissions permanently, you need to run *lux*
-with sudo and then logout/login.
+* To control the brightness level, you need to setup the relevant group permissions
+permanently.<br />So first, run *lux* with sudo and then logout/login.
 
-```
-$ sudo lux
-```
-
-If you are in a hurry, you can directly get these permissions properly in a new shell:
+* If you are in a hurry, you can directly get these permissions properly in a new shell:
 
 ```
 $ newgrp video
