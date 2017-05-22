@@ -100,7 +100,7 @@ check_perm() {
             udevadm trigger -c add -s backlight
         fi
 
-        if ! id -nG "${SUDO_USER}" | grep video > /dev/null ; then
+        if ! id -nG ${SUDO_USER} | grep video > /dev/null ; then
             usermod -a -G video "${SUDO_USER}"
             echo "User has been added to ~video~ group."
             echo "To setup the group permissions permanently, you need to logout/login."
