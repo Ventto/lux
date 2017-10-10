@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright 2016 Thomas "Ventto" Venriès <thomas.venries@gmail.com>
+# Copyright 2017 Thomas "Ventto" Venriès <thomas.venries@gmail.com>
 #
 # Lux is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,28 +22,34 @@ Without option, it prints controller name and brightness info:
 {controller} {min;value;max}
 
 Information:
-  -h:  Prints this help and exits
-  -v:  Prints version info and exists
+  -h  Prints this help and exits
+  -v  Prints version info and exists
 
 Thresholds (can be used in conjunction):
-  -m:  Set the brightness min (min < max)
-  -M:  Set the brightness max (max > min)
+  -m <value>
+      Set the brightness min (min < max)
+  -M <value>
+      Set the brightness max (max > min)
 
 Operations (with percent mode):
-  -a:  Add value
-  -s:  Subtract value
-  -S:  Set the brightness value (set thresholds will be ignored)
+  -a <value>[%]
+      Add value
+  -s <value>[%]
+      Subtract value
+  -S <value>[%]
+      Set the brightness value (set thresholds will be ignored)
 
 Controllers:
-  -c:  Set the controller to use (needs argument).
-       Use any controller name in /sys/class/backlight as argument.
-       Otherwise a controller is automatically chosen (default).
+  -c <path>
+      Set the controller to use (needs argument).
+      Use any controller name in /sys/class/backlight as argument.
+      Otherwise a controller is automatically chosen (default).
 '
 }
 
 version() {
     echo 'Lux 1.1
-Copyright (C) 2016 Thomas "Ventto" Venries.
+Copyright (C) 2017 Thomas "Ventto" Venriès.
 
 License GPLv3+: GNU GPL version 3 or later
 <http://gnu.org/licenses/gpl.html>.
