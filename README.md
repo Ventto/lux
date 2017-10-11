@@ -2,6 +2,7 @@ Lux
 ===
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat)](https://github.com/Ventto/lux/blob/master/LICENSE)
+[![Vote for lux](https://img.shields.io/badge/AUR-Vote_for-yellow.svg)](https://aur.archlinux.org/packages/lux/)
 
 *Lux is a POSIX-compliant Shell script to easily control brightness on backlight-controllers.*
 
