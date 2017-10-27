@@ -33,7 +33,7 @@ $ sudo make install
 ```
 
 * To control the brightness level, you need to setup the relevant group permissions
-permanently.<br />So first, run *lux* with sudo and then logout/login.
+permanently.<br />So first, run *lux* with `sudo` and then logout/login.
 
 * If you are in a hurry, you can directly get these permissions properly in a new shell:
 
