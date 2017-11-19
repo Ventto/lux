@@ -68,6 +68,8 @@ Operations (with percent mode):
       Subtract the brightness VALUE
   -S VALUE[%]
       Set the brightness VALUE (thresholds will be ignored)
+  -g Print the current brightness raw value
+  -G Print the current brightness percentage
 
 Controllers:
   -c CONTROLLER_NAME
@@ -82,6 +84,12 @@ Controllers:
 ```bash
 $ lux
 /sys/class/backlight/nv_backlight 0;1000;2000  # { current: 1000, max: 2000 }
+
+$ lux -g
+1000
+
+$ lux -G
+50%
 ```
 
 * Set a value (useful for pitchblack-shortcut):

@@ -38,6 +38,8 @@ Operations (with percent mode):
       Subtract the brightness VALUE
   -S VALUE[%]
       Set the brightness VALUE (thresholds will be ignored)
+  -g Print the current brightness raw value
+  -G Print the current brightness percentage
 
 Controllers:
   -c CONTROLLER_NAME
@@ -47,7 +49,7 @@ Controllers:
 }
 
 version() {
-    echo 'Lux 1.1
+    echo 'Lux 1.2
 Copyright (C) 2017 Thomas "Ventto" Venriès.
 
 License GPLv3+: GNU GPL version 3 or later
@@ -115,6 +117,7 @@ check_perm() {
 }
 
 main() {
+    gFlag=false
     mFlag=false
     MFlag=false
     cFlag=false
@@ -123,10 +126,14 @@ main() {
     SFlag=false
     percent_mode=false
 
-    while getopts 'hvm:M:c:a:s:S:' opt; do
+    while getopts 'hvgGm:M:c:a:s:S:' opt; do
         case $opt in
             h)  usage  ; exit;;
             v)  version; exit;;
+            g|G)  ! no_conjunction "${sFlag}" "${SFlag}" "${aFlag}" && arg_err
+                [ "$opt" = 'G' ] && percent_mode=true
+                gFlag=true
+                ;;
             m)  ! is_positive_int "$OPTARG" && arg_err
                 mFlag=true
                 mArg="$OPTARG"
@@ -144,7 +151,7 @@ main() {
                 cFlag=true
                 cArg="${controller_path}"
                 ;;
-            a)  ! no_conjunction "${sFlag}" "${SFlag}" && arg_err
+            a)  ! no_conjunction "${sFlag}" "${SFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
                     OPTARG=$(echo "$OPTARG" | cut -d % -f 1)
@@ -153,7 +160,7 @@ main() {
                 aFlag=true
                 valArg="$OPTARG"
                 ;;
-            s)  ! no_conjunction "${aFlag}" "${SFlag}" && arg_err
+            s)  ! no_conjunction "${aFlag}" "${SFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
                     OPTARG=$(echo "$OPTARG" | cut -d % -f 1)
@@ -162,7 +169,7 @@ main() {
                 sFlag=true
                 valArg="$OPTARG"
                 ;;
-            S)  ! no_conjunction "${aFlag}" "${sFlag}" && arg_err
+            S)  ! no_conjunction "${aFlag}" "${sFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
                     OPTARG=$(echo "$OPTARG" | cut -d % -f 1)
@@ -210,7 +217,11 @@ main() {
         exit
     fi
 
-    shift "$((OPTIND - 1))"
+    if ${gFlag}; then
+        ${percent_mode} && { echo "$((brightness * 100 / best_max))%"; exit; }
+        echo "$brightness"
+        exit
+    fi
 
     if ${SFlag} ; then
         ${percent_mode} && valArg=$(( best_max * valArg / 100 ))
