@@ -6,27 +6,28 @@ Lux
 
 *Lux is a POSIX-compliant Shell script to easily control brightness on backlight-controllers.*
 
-## Features
+## Perks
 
-*  Mark out the brightness value by a min & max value. That can avoid making the screen plunges into total darkness. It happens sometimes if you set the brightness 0 or 100. So we should set the maximum 99 or/and minimum 1. Moreover that could be useful if between 1 and 20, the brightness seems to be the same for eyes (set the minimum 20).
-
-* Set another backlight controller manually
-
-* Figure out the best max-brightness-value controller without setting one.
+* [x] **No requirement**: POSIX-compliant (minimal: *usermod, udevadm*)
+* [x] **Permission**: Avoid adding another setuid C binary
+* [x] **Auto**: Find the best max-brightness-value controller automatically
+* [x] **Manual**: Set a controller manually
+* [x] **Threshold**: Restrict brightness value with min/max relevant limits
+* [x] **Extra**: Minimum limit avoids the pitch black when brightness-zero
 
 ## Installation
 
 ### Package Manager Utilities
 
-```
-$ yaourt -S lux
+```bash
+$ pacman -S lux
 ```
 
 ### Manually
 
 * Install *lux*:
 
-```
+```bash
 $ git clone https://github.com/Ventto/lux.git
 $ cd lux
 $ sudo make install
@@ -44,85 +45,92 @@ $ newgrp video
 ## Usage
 
 ```
-lux [OPTION]...
+Usage: lux OPERATION [-c CONTROLLER_NAME] [-m MIN] [-M MAX]
+
+Brightness option values are positive integers.
+Percent mode, add "%" after values (operation options only).
+Without option, it prints controller name and brightness info.
+
+Information:
+  -h  Prints this help and exits
+  -v  Prints version info and exists
+
+Thresholds (can be used in conjunction):
+  -m MIN
+      Set the brightness MIN (MIN < MAX)
+  -M MAX
+      Set the brightness MAX (MAX > MIN)
+
+Operations (with percent mode):
+  -a VALUE[%]
+      Increase the brightness VALUE
+  -s VALUE[%]
+      Subtract the brightness VALUE
+  -S VALUE[%]
+      Set the brightness VALUE (thresholds will be ignored)
+
+Controllers:
+  -c CONTROLLER_NAME
+      Set the controller to use.
+      Use any CONTROLLER_NAME in /sys/class/backlight.
 ```
-
-Brightness's option values are positive integers.
-Percent mode: add '%' after values (operation options only).
-
-Without option, it prints controller name and brightness info:
-{controller} {min;value;max}
-
-#### Information:
-
-* -h: Prints this help and exits
-* -v: Prints version info and exists
-
-#### Thresholds (raw values, can be used in conjunction):
-
-* -m: Set the brightness min (natural integer, min < max)
-* -M: Set the brightness max (natural integer, max < min)
-
-#### Operations (with percent mode):
-
-* -a: Add value
-* -s: Subtract value
-* -S: Set the brightness value (set thresholds will be ignored)
-
-#### Controllers:
-* -c: Set the controller to use (needs argument). Use any controller name in /sys/class/backlight/ as argument. Otherwise a controller is automatically chosen (default)
-
 
 ## Examples
 
-* No option
-```
+* Print information about brightness value:
+
+```bash
 $ lux
-/sys/class/backlight/nv_backlight 0;43;99
+/sys/class/backlight/nv_backlight 0;1000;2000  # { current: 1000, max: 2000 }
 ```
 
-* Set a value (useful for pitchblack-shortcut)
-```
+* Set a value (useful for pitchblack-shortcut):
+
+```bash
 $ lux -S 0
 ```
 
-* Increase the current of 15%
-```
+* Increase the current of 15%:
+
+```bash
 $ lux -a 15%
 ```
 
-* Set the minimum 30, the maximum 99 and increase the current value of 10
+* Limit the value between [500;1999] and increase the brightness:
 
-```
-$ lux -m 30 -M 99 -a 10
+```bash
+$ lux -m 500 -M 1999 -a 10
 ```
 
-* Set the backlight controller and set the brightness value of 50
-```
-$ lux -c /sys/class/backlight/nv_backlight -S 50
+* Set the backlight controller manually and set the brightness:
+
+```bash
+$ ls /sys/class/backlight
+intel_backlight
+
+$ lux -c intel_backlight -S 50
 ```
 
 ## FAQ
 
-### From 0 to 20, there is no difference.
+### The max is 2000. Setting the value from 1 to 500 seems to do nothing.
 
-Sometimes, it happens. You could set the minimum 20.<br>
+* Set the minimum of 500:
 
+```bash
+$ lux -m 500 [OPTION]...
 ```
-lux -m 20 [OPTION]...
-```
 
-### Pitchblack at 100 ?
+### Pitch black when the brightness equals the maximum, how avoiding this ?
 
-Set the maximum with 99.<br>
-
-```
-lux -M 99 [OPTION]...
+```bash
+$ cat /sys/class/backlight/intel_backlight/max_brightness
+2000
+$ lux -M 1999 ...
 ```
 
 ### Set the brightness value after initializing an X session ?
 
+```bash
+$ echo "lux -S 75%" >> $HOME/.xinitrc
 ```
-echo "lux -S 10" >> $HOME/.xinitrc
-```
-

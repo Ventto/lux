@@ -1,5 +1,6 @@
 #!/bin/sh
-# Copyright 2017 Thomas "Ventto" Venriès <thomas.venries@gmail.com>
+#
+# Copyright 2017-2018 Thomas "Ventto" Venriès <thomas.venries@gmail.com>
 #
 # Lux is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,36 +15,34 @@
 # You should have received a copy of the GNU General Public License
 # along with Lux.  If not, see <http://www.gnu.org/licenses/>.
 usage() {
-    echo 'Usage: lux [OPTION]...
+    echo 'Usage: lux OPERATION [-c CONTROLLER_NAME] [-m MIN] [-M MAX]
+
 Brightness option values are positive integers.
 Percent mode, add "%" after values (operation options only).
-
-Without option, it prints controller name and brightness info:
-{controller} {min;value;max}
+Without option, it prints controller name and brightness info.
 
 Information:
   -h  Prints this help and exits
   -v  Prints version info and exists
 
 Thresholds (can be used in conjunction):
-  -m <value>
-      Set the brightness min (min < max)
-  -M <value>
-      Set the brightness max (max > min)
+  -m MIN
+      Set the brightness MIN (MIN < MAX)
+  -M MAX
+      Set the brightness MAX (MAX > MIN)
 
 Operations (with percent mode):
-  -a <value>[%]
-      Add value
-  -s <value>[%]
-      Subtract value
-  -S <value>[%]
-      Set the brightness value (set thresholds will be ignored)
+  -a VALUE[%]
+      Increase the brightness VALUE
+  -s VALUE[%]
+      Subtract the brightness VALUE
+  -S VALUE[%]
+      Set the brightness VALUE (thresholds will be ignored)
 
 Controllers:
-  -c <path>
-      Set the controller to use (needs argument).
-      Use any controller name in /sys/class/backlight as argument.
-      Otherwise a controller is automatically chosen (default).
+  -c CONTROLLER_NAME
+      Set the controller to use.
+      Use any CONTROLLER_NAME in /sys/class/backlight.
 '
 }
 
