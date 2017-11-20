@@ -27,9 +27,9 @@ Information:
 
 Thresholds (can be used in conjunction):
   -m MIN
-      Set the brightness MIN (MIN < MAX)
+      Set the brightness MIN (raw value)
   -M MAX
-      Set the brightness MAX (MAX > MIN)
+      Set the brightness MAX (raw value)
 
 Operations (with percent mode):
   -a VALUE[%]
@@ -77,10 +77,10 @@ is_percentage() {
 }
 
 check_perm() {
-    _brightness="${1}"
+    _ctrl="${1}"
     udev_rule="/etc/udev/rules.d/99-lux.rules"
 
-    if [ ! -w "${_brightness}" ] ; then
+    if [ ! -w "${_ctrl}/brightness" ] ; then
         if [ "$(id -u)" -ne 0 ]; then
             if ! id -nG "${USER}" | grep video > /dev/null ; then
                 echo "Use sudo once to setup group permissions,"
@@ -98,7 +98,7 @@ check_perm() {
             exit 1
         fi
 
-        if [ "$(ls -l "${_brightness}" | cut -d' ' -f4)" != 'video' ]; then
+        if [ -z "$(find "${_ctrl}" -name 'brightness' -group video)" ]; then
             if [ ! -f "${udev_rule}" ] ; then
                 echo "${udev_rule}: missing file."
                 exit 1
@@ -107,7 +107,7 @@ check_perm() {
             udevadm trigger -c add -s backlight
         fi
 
-        if ! id -nG ${SUDO_USER} | grep video > /dev/null ; then
+        if ! id -nG "${SUDO_USER}" | grep video > /dev/null ; then
             usermod -a -G video "${SUDO_USER}"
             echo "User has been added to ~video~ group."
             echo "To setup the group permissions permanently, you need to logout/login."
@@ -183,13 +183,12 @@ main() {
         esac
     done
 
-    best_max=-1
-
     if ${cFlag} ; then
         best_controller=${cArg}
         best_max=$(cat "${best_controller}/max_brightness")
     # Try to find the best-max-value controller
     else
+        best_max=-1
         for i in $(echo /sys/class/backlight/*) ; do
             [ "${i:-1}" = '*' ] && break
             max=$(cat "${i}/max_brightness")
@@ -204,14 +203,13 @@ main() {
         fi
     fi
 
+    check_perm "${best_controller}"
+
     file="${best_controller}/brightness"
-
-    check_perm "${file}"
-
     brightness=$(cat "${file}")
     best_max=$((best_max - 1))
 
-    # Needs to display the choosen controler
+    # Display controller information if no argument
     if [ "$#" -eq 0 ] ; then
         echo "${best_controller} 0;${brightness};${best_max}"
         exit
