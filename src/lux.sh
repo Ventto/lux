@@ -189,12 +189,14 @@ main() {
     # Try to find the best-max-value controller
     else
         best_max=-1
-        for i in $(echo /sys/class/backlight/*) ; do
-            [ "${i:-1}" = '*' ] && break
-            max=$(cat "${i}/max_brightness")
+        best_controller=''
+        for ctrl in /sys/class/backlight/*; do
+            [ ! -d "${ctrl}" ] && break
+            [ ! -r "${ctrl}/max_brightness" ] && break
+            max="$(cat "${ctrl}/max_brightness")"
             if [ "${best_max}" -lt "${max}" ] ; then
                 best_max="${max}"
-                best_controller="${i}"
+                best_controller="${ctrl}"
             fi
         done
         if [ -z "${best_controller}" ]; then
