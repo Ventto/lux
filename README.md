@@ -90,22 +90,29 @@ $ lux -G
 50%
 ```
 
-* Set a value (useful for pitchblack-shortcut):
+* Set the brightness value to zero (useful for pitchblack-shortcut):
 
 ```bash
 $ lux -S 0
 ```
 
-* Increase the current of 15%:
+* Increase the brightness:
 
 ```bash
-$ lux -a 15%
+$ lux -a 15%    (percentage)
+$ lux -a 15     (raw value)
 ```
 
 * Limit the value between [500;1999] and increase the brightness:
 
 ```bash
+$ lux -g
+1990
+
 $ lux -m 500 -M 1999 -a 10
+
+$ lux -g
+1999
 ```
 
 * Set the backlight controller manually and set the brightness:
