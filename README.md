@@ -9,11 +9,9 @@ Lux
 ## Perks
 
 * [x] **No requirement**: POSIX-compliant (minimal: *usermod, udevadm*)
-* [x] **Permission**: Avoid adding another setuid C binary
+* [x] **Lightweight**: ~200 lines
 * [x] **Auto**: Find the best max-brightness-value controller automatically
-* [x] **Manual**: Set a controller manually
 * [x] **Threshold**: Restrict brightness value with min/max relevant limits
-* [x] **Extra**: Minimum limit avoids the pitch black when brightness-zero
 
 ## Installation
 
@@ -57,9 +55,9 @@ Information:
 
 Thresholds (can be used in conjunction):
   -m MIN
-      Set the brightness MIN (MIN < MAX)
+      Set the brightness MIN (raw value)
   -M MAX
-      Set the brightness MAX (MAX > MIN)
+      Set the brightness MAX (raw value)
 
 Operations (with percent mode):
   -a VALUE[%]
