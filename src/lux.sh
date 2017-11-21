@@ -61,7 +61,7 @@ PURPOSE
 }
 
 no_conjunction() {
-    while [ "$#" -ne 0 ]; do $1 && return 1; shift; done; return 0
+    while [ "$#" -ne 0 ]; do $1 && return 1; shift; done
 }
 
 arg_err() {
@@ -69,11 +69,11 @@ arg_err() {
 }
 
 is_positive_int() {
-    echo "${1}" | grep -E '^[0-9]+$' > /dev/null && return 0; return 1
+    echo "${1}" | grep -E '^[0-9]+$' >/dev/null 2>&1 || return 1
 }
 
 is_percentage() {
-    echo "${1}" | grep -E '%$' > /dev/null && return 0; return 1
+    echo "${1}" | grep -E '%$' >/dev/null 2>&1 || return 1
 }
 
 check_perm() {
@@ -82,7 +82,7 @@ check_perm() {
 
     if [ ! -w "${_ctrl}/brightness" ] ; then
         if [ "$(id -u)" -ne 0 ]; then
-            if ! id -nG "${USER}" | grep video > /dev/null ; then
+            if ! id -nG "${USER}" | grep video >/dev/null 2>&1; then
                 echo "Use sudo once to setup group permissions,"
                 echo "to access to controller's brightness from user."
             else
@@ -93,7 +93,7 @@ check_perm() {
     fi
 
     if [ "$(id -u)" -eq 0 ]; then
-        if ! cut -d: -f1 /etc/group | grep video > /dev/null ; then
+        if ! cut -d: -f1 /etc/group | grep video >/dev/null 2>&1; then
             echo "Group ~video~ does not exist."
             exit 1
         fi
@@ -107,7 +107,7 @@ check_perm() {
             udevadm trigger -c add -s backlight
         fi
 
-        if ! id -nG "${SUDO_USER}" | grep video > /dev/null ; then
+        if ! id -nG "${SUDO_USER}" | grep video >/dev/null 2>&1; then
             usermod -a -G video "${SUDO_USER}"
             echo "User has been added to ~video~ group."
             echo "To setup the group permissions permanently, you need to logout/login."
@@ -154,7 +154,7 @@ main() {
             a)  ! no_conjunction "${sFlag}" "${SFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
-                    OPTARG=$(echo "$OPTARG" | cut -d % -f 1)
+                    OPTARG=$(echo "$OPTARG" | cut -d'%' -f1)
                 fi
                 ! is_positive_int "$OPTARG" && arg_err
                 aFlag=true
@@ -163,7 +163,7 @@ main() {
             s)  ! no_conjunction "${aFlag}" "${SFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
-                    OPTARG=$(echo "$OPTARG" | cut -d % -f 1)
+                    OPTARG=$(echo "$OPTARG" | cut -d'%' -f1)
                 fi
                 ! is_positive_int "$OPTARG" && arg_err
                 sFlag=true
@@ -172,7 +172,7 @@ main() {
             S)  ! no_conjunction "${aFlag}" "${sFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
-                    OPTARG=$(echo "$OPTARG" | cut -d % -f 1)
+                    OPTARG=$(echo "$OPTARG" | cut -d'%' -f1)
                 fi
                 ! is_positive_int "$OPTARG" && arg_err
                 SFlag=true
