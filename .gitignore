@@ -1,15 +1,9 @@
 /*
 
-!rules.d/
-rules.d/*
-!rules.d/99-lux.rules
-
-!src/
-src/*
-!src/lux.sh
-
-!CONTRIBUTING.md
-!Makefile
-!LICENSE
-!README.md
 !.gitignore
+!99-lux.rules
+!CONTRIBUTING.md
+!LICENSE
+!Makefile
+!README.md
+!lux.sh
