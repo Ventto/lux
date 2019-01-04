@@ -27,7 +27,7 @@ Without option, it prints controller name and brightness info.
 
 Information:
   -h  Prints this help and exits
-  -v  Prints version info and exists
+  -v  Prints version info and exits
 
 Thresholds (can be used in conjunction):
   -m MIN
