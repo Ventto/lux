@@ -24,7 +24,7 @@ install: $(MANPAGE)
 
 $(MANPAGE):
 	help2man -n 'Shell script to easily control brightness.' \
-		-N -h -h -v -v $(SCRIPT) | gzip - > $(MANPAGE)
+		-N -h -h -v -v ./$(SCRIPT) | gzip - > $(MANPAGE)
 
 uninstall:
 	$(RM) -r $(LICENSEDIR)
