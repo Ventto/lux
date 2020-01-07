@@ -29,7 +29,7 @@ Information:
   -h  Prints this help and exits
   -v  Prints version info and exits
 
-Thresholds (can be used in conjunction):
+Thresholds (must be used in conjunction with an operation):
   -m MIN
       Set the brightness MIN (raw value)
   -M MAX
