@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2018-2019 Thomas "Ventto" Venriès <thomas.venries@gmail.com>
+# Copyright (c) 2020 Thomas "Ventto" Venriès <thomas.venries@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -53,8 +53,8 @@ Controllers:
 }
 
 version() {
-    echo 'Lux 1.2
-Copyright (C) 2017 Thomas "Ventto" Venriès.
+    echo 'Lux 1.21
+Copyright (C) 2020 Thomas "Ventto" Venriès.
 
 License MIT
 <https://opensource.org/licenses/MIT>.
