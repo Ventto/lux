@@ -56,11 +56,8 @@ version() {
     echo 'Lux 1.2
 Copyright (C) 2017 Thomas "Ventto" Venriès.
 
-License GPLv3+: GNU GPL version 3 or later
-<http://gnu.org/licenses/gpl.html>.
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE
+License MIT
+<https://opensource.org/licenses/MIT>.
 '
 }
 
