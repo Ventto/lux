@@ -19,7 +19,8 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 usage() {
-    echo 'Usage: lux OPERATION [-c CONTROLLER_NAME] [-m MIN] [-M MAX]
+    cat <<-'USAGE'
+Usage: lux OPERATION [-c CONTROLLER_NAME] [-m MIN] [-M MAX]
 
 Brightness option values are positive integers.
 Percent mode, add "%" after values (operation options only).
@@ -49,16 +50,17 @@ Controllers:
   -c CONTROLLER_NAME
       Set the controller to use.
       Use any CONTROLLER_NAME in /sys/class/backlight.
-'
+USAGE
 }
 
 version() {
-    echo 'Lux 1.21
+    cat <<-'VERSION'
+Lux 1.21
 Copyright (C) 2020 Thomas "Ventto" Venriès.
 
 License MIT
 <https://opensource.org/licenses/MIT>.
-'
+VERSION
 }
 
 no_conjunction() {
@@ -82,7 +84,7 @@ check_perm() {
     udev_rule="/etc/udev/rules.d/99-lux.rules"
 
     if [ ! -w "${_ctrl}/brightness" ] ; then
-        if [ "$(id -u)" -ne 0 ]; then
+        case "$(id -u)" in (0) :;; (*)
             if ! id -nG "${USER}" | grep video >/dev/null 2>&1; then
                 echo "Use sudo once to setup group permissions,"
                 echo "to access to controller's brightness from user."
@@ -90,23 +92,23 @@ check_perm() {
                 echo "To setup the group permissions permanently, you need to logout/login."
             fi
             exit
-        fi
+        esac
     fi
 
-    if [ "$(id -u)" -eq 0 ]; then
+    case "$(id -u)" in (0)
         if ! cut -d: -f1 /etc/group | grep video >/dev/null 2>&1; then
             echo "Group ~video~ does not exist."
             exit 1
         fi
 
-        if [ -z "$(find "${_ctrl}" -name 'brightness' -group video)" ]; then
+        case "$(find "${_ctrl}" -name 'brightness' -group video)" in ('')
             if [ ! -f "${udev_rule}" ] ; then
                 echo "${udev_rule}: missing file."
                 exit 1
             fi
             udevadm control -R
             udevadm trigger -c add -s backlight
-        fi
+        esac
 
         if ! id -nG "${SUDO_USER}" | grep video >/dev/null 2>&1; then
             usermod -a -G video "${SUDO_USER}"
@@ -114,7 +116,7 @@ check_perm() {
             echo "To setup the group permissions permanently, you need to logout/login."
             exit
         fi
-    fi
+    esac
 }
 
 main() {
@@ -129,13 +131,13 @@ main() {
 
     while getopts 'hvgGm:M:c:a:s:S:' opt; do
         case $opt in
-            h)  usage  ; exit;;
-            v)  version; exit;;
-            g|G)  ! no_conjunction "${sFlag}" "${SFlag}" "${aFlag}" && arg_err
-                [ "$opt" = 'G' ] && percent_mode=true
+            (h) usage  ; exit;;
+            (v) version; exit;;
+            (g|G) ! no_conjunction "${sFlag}" "${SFlag}" "${aFlag}" && arg_err
+                case "$opt" in ('G') percent_mode=true; esac
                 gFlag=true
                 ;;
-            m)  ! is_positive_int "$OPTARG" && arg_err
+            (m) ! is_positive_int "$OPTARG" && arg_err
                 mFlag=true
                 mArg="$OPTARG"
                 ;;
@@ -143,16 +145,16 @@ main() {
                 MFlag=true
                 MArg="$OPTARG"
                 ;;
-            c)  controller_path="/sys/class/backlight/$OPTARG"
+            (c) controller_path="/sys/class/backlight/$OPTARG"
                 if [ ! -d "${controller_path}" ] ; then
                     echo "${controller_path}: controller not found."
                     exit
                 fi
-                [ "$#" -eq 2 ] && arg_err
+                case "$#" in (2) arg_err; esac
                 cFlag=true
                 cArg="${controller_path}"
                 ;;
-            a)  ! no_conjunction "${sFlag}" "${SFlag}" "${gFlag}" && arg_err
+            (a) ! no_conjunction "${sFlag}" "${SFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
                     OPTARG=$(echo "$OPTARG" | cut -d'%' -f1)
@@ -161,7 +163,7 @@ main() {
                 aFlag=true
                 valArg="$OPTARG"
                 ;;
-            s)  ! no_conjunction "${aFlag}" "${SFlag}" "${gFlag}" && arg_err
+            (s) ! no_conjunction "${aFlag}" "${SFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
                     OPTARG=$(echo "$OPTARG" | cut -d'%' -f1)
@@ -170,7 +172,7 @@ main() {
                 sFlag=true
                 valArg="$OPTARG"
                 ;;
-            S)  ! no_conjunction "${aFlag}" "${sFlag}" "${gFlag}" && arg_err
+            (S) ! no_conjunction "${aFlag}" "${sFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
                     OPTARG=$(echo "$OPTARG" | cut -d'%' -f1)
@@ -179,8 +181,8 @@ main() {
                 SFlag=true
                 valArg="$OPTARG"
                 ;;
-            \?) usage; exit 2;;
-            :)  usage; exit 2;;
+            (\?)usage; exit 2;;
+            (:) usage; exit 2;;
         esac
     done
 
@@ -200,10 +202,10 @@ main() {
                 best_controller="${ctrl}"
             fi
         done
-        if [ -z "${best_controller}" ]; then
+        case "${best_controller}" in ('')
             echo "No backlight controller detected"
             exit
-        fi
+        esac
     fi
 
     check_perm "${best_controller}"
@@ -213,10 +215,10 @@ main() {
     best_max=$((best_max - 1))
 
     # Display controller information if no argument
-    if [ "$#" -eq 0 ] ; then
+    case "$#" in (0)
         echo "${best_controller} 0;${brightness};${best_max}"
         exit
-    fi
+    esac
 
     if ${gFlag}; then
         ${percent_mode} && { echo "$((brightness * 100 / best_max))%"; exit; }
@@ -226,7 +228,7 @@ main() {
 
     if ${SFlag} ; then
         ${percent_mode} && valArg=$(( best_max * valArg / 100 ))
-        [ "$valArg" -lt 0 ] && valArg=0
+        case "$valArg" in (-*) valArg=0; esac
         [ "$valArg" -gt "$best_max" ] && valArg="${best_max}"
         echo "${valArg}" | tee "${file}"
         exit
@@ -235,10 +237,9 @@ main() {
     ${mFlag} && own_min="${mArg}" || own_min=0
     ${MFlag} && own_max="${MArg}" || own_max="${best_max}"
 
-    if [ $(( own_max - own_min )) -le 0 ] || \
-        [ $(( own_max - own_min )) -gt "${best_max}" ] ; then
-        arg_err
-    fi
+    case $(( own_max - own_min )) in ([1-9]*)
+        [ $(( own_max - own_min )) -gt "${best_max}" ] && arg_err
+    esac
 
     [ "$brightness" -lt "$own_min" ] && brightness="${own_min}"
     [ "$brightness" -gt "$own_max" ] && brightness="${own_max}"
