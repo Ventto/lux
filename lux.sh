@@ -64,7 +64,11 @@ VERSION
 }
 
 no_conjunction() {
-    while [ "$#" -ne 0 ]; do $1 && return 1; shift; done
+    while :; do
+        case "$#" in (0) break; esac
+        $1 && return 1
+        shift
+    done
 }
 
 arg_err() {
@@ -72,11 +76,13 @@ arg_err() {
 }
 
 is_positive_int() {
-    echo "${1}" | grep -E '^[0-9]+$' >/dev/null 2>&1 || return 1
+    case "$1" in (''|*[!0-9]*) return 1; esac
+    return 0
 }
 
 is_percentage() {
-    echo "${1}" | grep -E '%$' >/dev/null 2>&1 || return 1
+    case "$1" in (*'%') return 0; esac
+    return 1
 }
 
 check_perm() {
@@ -157,7 +163,7 @@ main() {
             (a) ! no_conjunction "${sFlag}" "${SFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
-                    OPTARG=$(echo "$OPTARG" | cut -d'%' -f1)
+                    OPTARG="${OPTARG%%'%'*}"
                 fi
                 ! is_positive_int "$OPTARG" && arg_err
                 aFlag=true
@@ -166,7 +172,7 @@ main() {
             (s) ! no_conjunction "${aFlag}" "${SFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
-                    OPTARG=$(echo "$OPTARG" | cut -d'%' -f1)
+                    OPTARG="${OPTARG%%'%'*}"
                 fi
                 ! is_positive_int "$OPTARG" && arg_err
                 sFlag=true
@@ -175,7 +181,7 @@ main() {
             (S) ! no_conjunction "${aFlag}" "${sFlag}" "${gFlag}" && arg_err
                 if is_percentage "$OPTARG"; then
                     percent_mode=true
-                    OPTARG=$(echo "$OPTARG" | cut -d'%' -f1)
+                    OPTARG="${OPTARG%%'%'*}"
                 fi
                 ! is_positive_int "$OPTARG" && arg_err
                 SFlag=true
