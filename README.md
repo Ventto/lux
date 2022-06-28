@@ -17,9 +17,17 @@ Lux
 
 ### Package Manager Utilities
 
+#### Yay
+
 ```bash
-$ pacman -S lux
+$ yay -S lux
 ```
+
+#### Paru
+```bash
+$ paru -S lux
+```
+
 
 ### Manually
 
